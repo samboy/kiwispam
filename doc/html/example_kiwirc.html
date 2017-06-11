@@ -1,0 +1,69 @@
+<HTML><HEAD><TITLE>Example .kiwirc file</TITLE></HEAD><BODY><PRE>
+# Copyright 1998, 2000 Sam Trenholme
+# This code is released to the public domain. 
+
+# This is a file that determines your kiwi preferences.  This file needs
+# 600 or 700 permission to be used, since this contains private information
+
+# Are we using the Qmail MTA?  This is normally not defined, since most
+# systems use sendmail instead of qmail
+
+kiwi_qmail = "TRUE"
+
+# Location of sendmail on our system 
+
+kiwi_sendmail_path = "/usr/lib/sendmail"
+
+# number of days in the past we accept time stamped materials 
+
+kiwi_days_short = 3
+kiwi_days_mid = 14
+kiwi_days_long = 90
+
+#  This tells us to forward accepted mail to MYADDRESS
+
+kiwi_forward = "TRUE"
+
+# This tells us to append an accepted mail to the file MYMAILBOX 
+
+# kiwi_append = "TRUE"
+
+# What mailbox to append mail to 
+
+kiwi_my_mailbox = "/var/spool/mail/yourusername"
+
+# What address to forward mail to 
+
+kiwi_my_address = "name@some.other.email.you.have"
+
+# Which file contains a log file 
+kiwi_maillog = "/home/yourusername/.maillog"
+
+# The key for the encryption 
+
+kiwi_key = "XXXXXXXXXXXXXXXX"
+
+# You can set up a password to give friends so that they can email you 
+# w/o having to remember an encrypted cookie.
+
+# kiwi_password = "changeme"
+
+# You may set it up so that message with a FORMAT_MID_TIMEOUT Kiwi cookie
+# is processed by a separate mail delivery agent.  This agent has to accept
+# mail from the standard input, and either filter or deliver the email to
+# your address.  The child process is passed no arguments, except for the
+# name of the program as argv[0] */
+
+# kiwi_mid_process = "/usr/bin/procmail" 
+
+# kiwi_return_path: The return-path of all mail the Kiwi suite sends out 
+# will be sent to this value.  If this is not set, the return-path of
+# outgoing mail will be set to 'nobody@example.com"
+
+# Note: This only works on Qmail systems. On sendmail systems, give
+# sendmail an argument of -f, followed by the desired return-path, to
+# change the return-path.
+
+# kiwi_return_path = "nobody@yourdomain.com"
+
+</PRE></BODY></HTML>

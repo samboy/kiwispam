@@ -1,0 +1,333 @@
+<HTML><HEAD><TITLE>Secure mailto: addresses</TITLE></HEAD><BODY>
+
+<!-- This needs some work -->
+
+<H1>Using Kiwi to protect mailto: URLs</H1>
+
+<H2>Index</H2>
+
+<P>
+
+<A HREF=#intro>Introduction</A><BR>
+<A HREF=#require>Requirements</A><BR>
+<A HREF=#html>Making a web page with a Kiwi-enabled email address</A><BR>
+<A HREF=#clicrypt>The clicrypt program</A><BR>
+<A HREF=#kiwirc>The .kiwirc file</A><BR>
+<A HREF=#wrapper>Making a wrapper for clicrypt</A><BR>
+<A HREF=#security>Security considerations</A><BR>
+<A HREF=#testing>Testing the web page with the Kiwi enabled
+                 address</A><BR>
+
+<A NAME=intro>
+
+<H2>Introduction</H2>
+
+<P>
+
+Frequently, people with web pages wish to make their email address
+available on the World Wide Web.  Unfortunately, it is common for bulk
+emailers to run automated programs that obtain email addresses from web
+pages.  With the list of obtained email address, the bulk mailer sends out
+unwanted commercial email.
+
+<P>
+
+One way of approaching this problem is to configure the web server to look
+for programs of that nature hitting the web server, and redirect all such
+request to the output of programs like <A
+href=http://www.e-scrub.com/wpoison/>Wpoison</A>.  Wpoison is a program
+the generates random, nonfunctional email address, which makes the use of
+programs that automatically gather email addresses on the web ineffective. 
+
+<P>
+
+While programs like Wpoison are very effective when we can determine that
+it is an email-addressing gathering program hitting our web server, many
+such programs will carefully disguise their nature. 
+
+<P>
+
+Kiwi can be utilized so as to help us further thwart such programs.  The
+<CODE>clicrypt</CODE> program can be used in a <I>server
+side include</I> to trace where people are gathering email addresses.  (A
+<I>server side include</I> is a feature most web servers have that allows
+web pages to run programs to determine their content.) 
+
+<P>
+
+This allows us to determine where someone obtained an email address to
+send us unwanted mail.  We can take necessary action.  For example, we
+could look at our web server logs to find out when they obtained the email
+address in question, or simply filter out any connections from that
+machine. We could also, on Qmail systems, disable the email address that
+they obtained by their email address gathering program.
+
+<P>
+
+The use of Kiwi-enabled addresses on web pages gives us more
+flexibility in handling automated programs that gather email address on
+web pages.  The rest of this document describes how to implement these
+features.
+
+<A NAME=require>
+
+<H2>Requirements</H2>
+
+<P>
+
+In order to have Kiwi-enabled email addresses on your web pages, you need 
+the following:
+
+<UL>
+
+<LI>Kiwi compiled on the web server in question
+
+<LI>A web server that sets the environmental variable 
+   <CODE>REMOTE_ADDR</CODE> to contain the IP used to view an SSI-enabled
+   web page.  Most (if not all) SSI-enabled web servers will do this.
+
+<LI>SSI enabled on the web server in question.
+
+<LI>Access to the SSI mechanism of the web server you wish to have
+    a Kiwi-enabled email address on.
+
+</UL>
+
+<A NAME=html>
+
+<H2>Making a web page with a Kiwi-enabled email address</H2>
+
+<P>
+
+The HTML code to a <CODE>mailto:</CODE> link with a Kiwi-enabled address
+will look something like this:
+
+<BLOCKQUOTE><CODE>
+
+&lt;A HREF=mailto:user+&lt;!--#exec 
+cmd="/home/yourusername/clicrypt_wrapper"--&gt;@host.domain.com&gt;
+
+</CODE></BLOCKQUOTE>
+
+Where <CODE>user@host.domain.com</CODE> is your email address before the
+Kiwi cookie is added to it, and 
+<CODE>/home/yourusername/clicrypt_wrapper</CODE> is a small program what
+will change the <CODE>KIWIRC</CODE> environmental variable, and then call
+<CODE>clicrypt</CODE>.
+
+<P>
+
+Note that the above html will only function in an SSI-enabled web page.
+
+<A NAME=clicrypt>
+
+<H2>The clicrypt program</H2>
+
+<P>
+
+The <CODE>clicrypt</CODE> program is one of the programs included with the
+Kiwi software suite.  It is compiled when the Kiwi suite is compiled.  See
+the file <A href=Start.html>Start.html</A> for information on how to set
+up and compile the Kiwi suite.
+
+<P>
+
+By default, <CODE>make install</CODE> places <CODE>clicrypt</CODE> in 
+<CODE>/usr/local/bin</CODE>
+directory with the name <CODE>clicrypt</CODE>. 
+
+<A NAME=kiwirc>
+
+<H2>The .kiwirc file</H2>
+
+The <CODE>clicrypt</CODE> program looks for a <CODE>.kiwirc</CODE> file 
+using the following rules:
+
+<UL>
+
+<LI>If the environmental variable <CODE>KIWIRC</CODE> is defined, the value
+    of <CODE>KIWIRC</CODE> is the location of the KIWIRC file.
+
+<LI>Otherwise, if the environmental variable <CODE>HOME</CODE> is defined,
+    look for a file named <CODE>.kiwirc</CODE> in the directory 
+    <CODE>HOME</CODE> points to.
+
+<LI>Finally, determine the uid that the <CODE>clicrypt</CODE> process is 
+    running as (using <CODE>geteuid</CODE>), find out the home directory 
+    of that uid, and look for a <CODE>.kiwirc</CODE> file there.
+
+</UL>
+
+<A NAME=wrapper>
+
+<H2>Making a wrapper for clicrypt</H2>
+
+On most web servers, ssi pages are run as the <CODE>nobody</CODE> user,
+which means, instead of calling <CODE>clicrypt</CODE> directly from the 
+ssi-enabled webpage, we run a <I>wrapper program</I> which does the
+following two things:
+
+<UL>
+
+<LI>Sets the <CODE>KIWIRC</CODE> environmental variable
+
+<LI>Runs the <CODE>clicrypt</CODE> program
+
+</UL>
+
+Here is what such a program would look like if written in C:
+
+<PRE>
+main() {
+    setenv("KIWIRC","/home/yourusername/hidden/kiwirc");
+    execl("/usr/local/bin/clicrypt","clicrypt",(char *)0);
+    }
+</PRE>
+
+<P>
+
+In the above exmaple program, replace 
+<CODE>/home/yourusername/hidden/.kiwirc</CODE> with the path to the 
+<CODE>kiwirc</CODE> file you wish <CODE>clicrypt</CODE> to use.  If
+<CODE>clicrypt</CODE> is not in its default location 
+(<CODE>/usr/local/bin</CODE>), replace <CODE>/usr/local/bin/clicrypt</CODE>
+with the path to <CODE>clicrypt</CODE> with the path to <CODE>clicrypt</CODE>
+on your system.
+
+<P>
+
+Here is one way of converting the above C code to a wrapper for the
+<CODE>clicrypt</CODE> program:
+
+<UL>
+
+<LI>Type the above program (with the appropriate modifications) in to a 
+    file called <CODE>clicrypt_wrapper.c</CODE>
+<LI>Compile the above program as follows:
+
+    <BLOCKQUOTE><CODE>cc -o clicrypt_wrapper clicrypt_wrapper.c</CODE>
+    </BLOCKQUOTE>
+
+<LI>Have the ssi page point to the above program.
+
+</UL>
+
+<A NAME=security>
+
+<H2>Security considerations</H2>
+
+<P>
+
+In order for this to run, the <CODE>kiwirc</CODE> file in question needs to 
+be readable by the user the web server runs ssi scripts as, usually the
+<CODE>nobody</CODE> user.  
+
+<P>
+
+For security reasons, this setup should only be run on systems
+where you trust the other users on your system.  You can get some level
+of protection from untrusted users, by doing the following:
+
+<UL>
+
+<LI>Placing the .kiwirc file in a hidden directory:
+    <OL>
+    <LI>Creating a directory off of your home directory called 
+        <CODE>hidden</CODE>
+    <LI>Making the directory <CODE>hidden</CODE> unreadable by other users
+        on your system with <CODE>chmod 711 hidden</CODE>
+    <LI>Placing a directoy in the the direcotry hidden with a 
+        difficult-to-guess name, such as <CODE>kgu23y34nvcmnq</CODE>
+    <LI>Placing the kiwirc file in that directory.
+    </OL>
+
+<LI>Write a program in C that points <CODE>KIWIRC</CODE> to the
+    hidden directory.
+<LI>Compiling the C program (see above for details)
+<LI>Making the C program unreadable by other users with
+    <CODE>chmod 711 clicrypt_wrapper</CODE>
+<LI>Pointing the ssi page to <CODE>clicrypt_wrapper</CODE>
+</UL>
+
+Note that some versions of Unix have ways of reading a binary file with
+711 permissions, so this method is not always secure.
+
+<P>
+
+<A NAME=testing>
+
+<H2>Testing the web page with the Kiwi enabled address</H2>
+
+<P>
+
+Go to the web page containing the Kiwi-enabled email address.  Verify
+that the SSI correctly created an email address with a Kiwi cookie.
+Next, send a message to the address on the web page.
+
+<P>
+
+Once you get the message, look at the email address the message was sent
+to.  You may have to enable viewing of full headers on your mail user
+agent to do this. 
+
+<P>
+
+The email address the example mail sent to yourself above will be in this
+form:
+
+<BLOCKQUOTE>
+
+<CODE>
+user+cookie@host.domain.com
+</CODE>
+
+</BLOCKQUOTE>
+
+Where <CODE>user</CODE> is your username, <CODE>cookie</CODE> is an
+encrypted cookie that looks like <CODE>2gbn5tn</CODE> or
+<CODE>gq4y5ci</CODE>, and <CODE>host.domain.com</CODE> is the host and
+domain name portion of your email address.
+
+<P>
+
+To the information stored in the email address' cookie, type in the
+following commands at a Unix shell prompt:
+
+<BLOCKQUOTE>
+<CODE>
+$ /usr/local/bin/decode<BR>
+</CODE>
+</BLOCKQUOTE>
+
+Where <CODE>/usr/local/bin/decode</CODE> is the location the decode
+symlink to the clicrypt binary is located.  Use the
+cut and paste functionality of the environment your mail user agent is in
+to paste the above cookie.
+
+<P>
+
+The next step is to use the paste functionality of your environment to
+paste the above cookie.  After pasting the above cookie, hit the return
+key.
+
+<P>
+
+The output from the <CODE>decode</CODE> program will look something like
+this:
+
+<BLOCKQUOTE><CODE>
+	Data type: 28BIT IP BLOCK<BR>
+	Message: 192.168.12.32/28
+</CODE></BLOCKQUOTE>
+
+The message portion of deocde's output will contain, within a range of 16
+ips, the ip that you viewed the web page from.  (The reason for the 16-ip
+range is because the Kiwi specification does not give us a finer
+resolution.) 
+
+<P>
+
+With this information, you can look at the logs, and determine when and
+where someone obtained the email address in question.
+
+</BODY></HTML>

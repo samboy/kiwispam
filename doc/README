@@ -1,0 +1,9 @@
+The text directory contains the contents of both the man and the html
+directories converted to text.
+
+The html directory contains the html documentation.  This is the most
+detailed documentation for the Kiwi suite.
+
+The man directory contains terse man pages for all the executable programs
+that Kiwi generates.
+

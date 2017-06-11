@@ -1,0 +1,27 @@
+The Kiwi package is copyright 1998 Sam Trenholme, and is released to the
+public domain.  Version 2 of Kiwi has been released to the public domain
+in 2000 by Sam Trenholme.
+
+Here is a description of file and folders in this directory:
+
+NAME               DESCRIPTION                                       
+-----------------  ------------------------------------------------ 
+FILES              This file you are reading                         
+RELEASE            Some release notes                                
+WARNINGS           Some possible security problems with the system   
+CHANGELOG          A list of the changes between releases            
+doc                Directory containing documentation to read
+src                Directory containing source code to compile
+tools		   Directory comtaining the secpass tool
+
+The name and descripton of the files in the 'tools' directory:
+
+NAME            DESCRIPTION
+--------------- -------------------------------------------------------------
+secpass         Perl script to generate random key.  Needs OS with 
+                /dev/random support
+publish		A small shell script I wrote to upload updates of this
+                program
+config2rc	A perl script that converts the Config.h file from Kiwi 1.x
+                to a Kiwi 2.x-compatible .kiwirc file.
+

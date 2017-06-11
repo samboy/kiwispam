@@ -1,0 +1,35 @@
+THIS SOFTWARE COMES UNDER NO WARRANTY.  USE THIS SOFTWARE AT YOUR OWN RISK!
+
+---------------------------------------------------------------
+
+Please, *Please* change the key in the src/config.h file.  The src/secpass 
+perl script will generate a suitable password on systems with /dev/random
+
+In addition, please change the PASSWORD to something besides "changeme", if
+you choose to have a password (red the documentation for details on this)
+
+---------------------------------------------------------------
+
+Since there really is no "off the shelf" block cipher with 32-bit block sizes,
+I have opted to modify the Blowfish cipher to use 32-bit blocks.
+
+This version of Blowfish is described by Bruce Schneier as being "not 
+recommended for actual implementation".
+
+Hopefully, the emergence of Hasty Pudding will encourage the development and
+cryptanalysis of other ciphers with support for a truly variable block
+size.
+
+Don't encrypt your 18-gig hard disk with this cipher--anyone with 2^32 known
+plaintexts knows all plaintext-ciphertext pairs.  2^32 plaintexts translates
+in to 16 gigs of data.
+
+Also, do not post more than 4 billion news articles or send more than 4 
+billion emails with this program.  If you find yourself sending out that 
+amount of email, you may have an internet addiction problem. 
+
+--------------------------------------------------------------
+
+A message with a random cookie has a 0.88%, or 1 in 113.5,  chance of 
+getting through.
+

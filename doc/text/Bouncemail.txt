@@ -1,0 +1,59 @@
+
+                   Handling emails sent to bad Kiwi cookies
+                                       
+   It is possible that someone will inadvertently send mail to an email
+   address with a bad Kiwi cookie. For example, an acquaintance may send
+   us a message to an address that has expired, or someone may have
+   incorrectly copied a Kiwi-enabled email address.
+   
+   By default, Kiwi silently discards messages that do not have a valid
+   cookie. However, it may be more desirable for you to be able to have
+   Kiwi send people who send email to an address with a bad cookie a
+   bounce message, informing them that they need to send a message to an
+   email address with a correct Kiwi cookie.
+   
+   Kiwi has support for BOUNCEMAIL which allows Kiwi to send a reply to a
+   message with an invalid Kiwi cookie. In order to use this feature, do
+   the following:
+     * Set up a form letter to send to people who email an incorrect Kiwi
+       cookie.
+     * Have the variable kiwi_bouncemail in .kiwirc point to that file.
+       
+   The form letter should have the following characteristics:
+     * The form letter should inform the user that the message in
+       question was not delivered to you.
+     * The form letter needs to have, at the top of the message, a return
+       address and a subject header. There should be at least one blank
+       line between the headers and the body of the message.
+     * In order to stop mail loops, the form letter should have a return
+       address that silently discards mail. The nobody email address on
+       many systems does this. An example nobody email address is
+       nobody@example.com (this particular email address does not work,
+       and is only shown as an example of a nobody email address)
+     * Since Kiwi will append the form letter with a copy of the
+       undelivered message, the form letter should end with a note
+       indicating that the remainder of the message is the undelivered
+       message.
+       
+   Here is an example form letter. Please change nobody@example.com to a
+   working email address that silently discards mail before using this
+   example:
+   
+From: nobody@example.com
+To: nobody@example.com
+Return-Path: nobody@example.com
+Reply-To: nobody@example.com
+Subject: Your mail was not delivered
+
+[In order to stop mail loops, replies to this message are silently discarded]
+
+Hello there,
+
+You mail was not delivered to me for a number of possible reasons.  Possible
+reasons include:
+
+* The email address you sent mail to timed out
+
+* The email address you tried sending mail to was incorrectly copied
+
+You wrote:

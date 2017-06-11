@@ -1,0 +1,91 @@
+<HTML><HEAD><TITLE>Setting up bounce messages</TITLE></HEAD><BODY>
+
+<H1>Handling emails sent to bad Kiwi cookies</H1>
+
+<P>
+
+It is possible that someone will inadvertently send mail to an email
+address with a bad Kiwi cookie.  For example, an acquaintance may send us
+a message to an address that has expired, or someone may have incorrectly
+copied a Kiwi-enabled email address.
+
+<P>
+
+By default, Kiwi silently discards messages that do not have a valid cookie.
+However, it may be more desirable for you to be able to have Kiwi send
+people who send email to an address with a bad cookie a bounce message,
+informing them that they need to send a message to an email address with
+a correct Kiwi cookie.
+
+<P>
+
+Kiwi has support for <I>BOUNCEMAIL</I> which allows Kiwi to send a reply to
+a message with an invalid Kiwi cookie.  In order to use this feature, do the
+following:
+
+<UL>
+
+<LI>Set up a form letter to send to people who email an incorrect Kiwi cookie.
+
+<P>
+<LI>Have the variable <I>kiwi_bouncemail</I> in <CODE>.kiwirc</CODE> point to
+    that file.
+
+</UL>
+
+The form letter should have the following characteristics:
+
+<UL>
+
+<LI>The form letter should inform the user that the message in question was
+    not delivered to you.
+
+<P>
+<LI>The form letter needs to have, at the top of the message, a return address
+    and a subject header.  There should be at least one blank line between the
+    headers and the body of the message.
+
+<P>
+<LI>In order to stop mail loops, the form letter should have a return address
+    that silently discards mail.  The <CODE>nobody</CODE> email address on 
+    many systems does this.  An example <CODE>nobody</CODE> email address is
+    <CODE>nobody@example.com</CODE> (this particular email address does not
+    work, and is only shown as an example of a nobody email address)
+
+<P>
+<LI>Since Kiwi will append the form letter with a copy of the undelivered
+    message, the form letter should end with a note indicating that the
+    remainder of the message is the undelivered message.
+
+</UL>
+
+Here is an example form letter.  Please change <CODE>nobody@example.com</CODE>
+to a working email address that silently discards mail before using this
+example:
+
+<P>
+
+<PRE>
+From: nobody@example.com
+To: nobody@example.com
+Return-Path: nobody@example.com
+Reply-To: nobody@example.com
+Subject: Your mail was not delivered
+
+[In order to stop mail loops, replies to this message are silently discarded]
+
+Hello there,
+
+You mail was not delivered to me for a number of possible reasons.  Possible
+reasons include:
+
+* The email address you sent mail to timed out
+
+* The email address you tried sending mail to was incorrectly copied
+
+You wrote:
+
+</PRE>
+
+</BODY></HTML>
+

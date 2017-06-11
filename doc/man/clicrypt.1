@@ -1,0 +1,79 @@
+.\" Note that this man page needs to be processed by a troff that recognizes
+.\" the standard latin1 digraph escape sequences.  Recent versions of Groff
+.\" have this capability.
+.TH CLICRYPT 1 "OCTOBER 2001" Kiwi "Kiwi User Manual"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.\" Due to the way the -mandoc macro works, this needs to be placed
+.\" after the .TH heading
+.hy 0
+.if n .na
+.SH NAME
+clicrypt \- generate a Kiwi cookie 
+.SH SYNOPSIS
+.BR clicrypt " [ " message " | " ip " ]"
+.SH DESCRIPTION
+.B clicrypt
+generates, on the command line, one of the following Kiwi cookies:
+.TP 2
+*
+A set of three Kiwi cookies, one with a short timeout, one with a medium
+timeout, and one with a long timeout.
+.TP
+*
+A Kiwi cookie containing a five-letter message.  
+.TP
+*
+A Kiwi cookie with an IP address.
+.PP
+
+To display all three timeout cookies, simply run 
+.B clicrypt
+with no arguments.  The time stamp of the cookie generated is based on 
+the current time returned by the
+.B time(5)
+system call.
+
+To display the Kiwi cookie for a five-letter message, type in the five-letter
+message as the first (and only) argument to Kiwi.  The message needs
+to be precisely five letters long, and only consist of ASCII letters 
+or the letters 
+.BR \('A ", " \('E , 
+.BR \('I ", " \('O ,  
+.BR \('U ", or " 
+.BR \(~N .
+The message is case-insensitive\(emall letters are converted to 
+lowercase before being converted in to a Kiwi cookie.
+
+This is useful if one wises to generate a permanent email address for a 
+mailing list or web signup form, where one can track who obtains the email 
+address in question.
+
+To generate a Kiwi cookie which contains the lower 28-bits of an IP address, 
+have either the environmental variable REMOTE_ADDR contain a dotted 
+decimal IP, or give 
+.B clicrypt
+a dotted-decimal IP as its first (and only) argument.  
+
+In all cases the encrypted cookie is outputted to the standard output.
+.SH EXAMPLE
+.nf
+$ ./clicrypt 
+Cookie with short timeout: arokbkm
+Cookie with medium timeout (Usenet cookie): vgvbz6f
+Cookie with long timeout: fw43uf7
+$ ./clicrypt hello
+mqoihuj
+$ ./clicrypt 127.0.0.1
+bdvke67
+.fi
+.SH FILES
+.IR .kiwirc :
+The file determining the configuration of programs in the Kiwi suite.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+.SH "SEE ALSO"
+.BR decode , 
+.BR infilter ,
+.BR wrapper ,
+and the Kiwi HTML documentation

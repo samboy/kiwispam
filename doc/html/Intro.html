@@ -1,0 +1,174 @@
+<HTML><HEAD><TITLE>Introduction to the Kiwi software suite</TITLE></HEAD>
+
+<BODY>
+
+<H1>The Kiwi spam-protection package</H1>
+
+<P>
+
+The popularity of the internet has caused numerous people, often of
+questionable legality, to send out mass emails, or <I>spam</I> to as many
+addresses as these people can find. 
+
+<P>
+
+No rational person wishes to receive such email in their mailbox.  One
+common technical solution is for people to modify the email address they
+use to post to newsgroups in to an invalid email address.  It is usually
+obvious to a human looking at the email address what the actual email
+address is, but a computer program run by a spammer to obtain email
+addresses will not obtain the email address in question.  A look at most
+Usenet newsgroups shows that this is a very common practice.  This
+practice is called <I>munging</I>.
+
+<P>
+
+Munging, while effective, has a number of downsides:
+
+<P>
+
+<UL>
+
+<LI> Munging is against traditional internet nettiquette.  This can be
+     seen, for example, in Usenet2, where munging is expressly forbidden.
+
+<P>
+<LI> Munging makes it more difficult for moderates who need to send out
+     a large number of rejection messages in a short period of time.
+
+<P>
+<LI> Munging makes it difficult for people to respond via email to Usenet
+     postings.
+
+<P>
+<LI> The practice of munging encourages people to not have their email 
+     address altogether in their postings.  This encourages anonymity,
+     which results in a lower signal to noise ratio in discussion groups.
+
+</UL>
+
+We can see that munging is, in many ways, undesirable.  For many people,
+however, making their private email address available to the world every
+time they have a "mailto" link on their web page or post to Usenet is not
+a viable option. 
+
+<P>
+
+The <I>Kiwi</I> package provides a method of allowing one to send out
+email with a valid return address, without placing one's personal email
+address on spammers' lists.  The way it works is by taking an email
+address in the form
+
+<BLOCKQUOTE>
+
+<CODE>
+
+	name@domain.com
+
+</CODE>
+
+</BLOCKQUOTE>
+
+and converting it to the form
+
+<BLOCKQUOTE>
+
+<CODE>
+
+	name+</CODE><I>cookie</I><CODE>@domain.com
+
+</CODE>
+
+</BLOCKQUOTE>
+
+Where the <I>cookie</I> is a short (32-bit) encrypted message that can
+contain information such as:
+
+<P>
+<UL>
+
+<LI> The date and time an email was sent out or an article was posted.
+     This allows us to have email addresses time out after a set period
+     of time--Three days, two weeks, or 90 days, depending on where the
+     email address is being made public.  This way, while spammers can
+     obtain a temporary email address of ours, the email address quickly
+     becomes worthless.
+
+<P>
+<LI> The ip someone views a "mailto" link from.  This allows us to find
+     out where spammers obtain email addresses on web pages from, and
+     take action on this information.
+
+<P>
+<LI> A five letter code.  This code can be used as an email address that 
+     we use to subscribe to a list.  Should the email address get spam, we
+     can inform the mailing list manager that a spammer is mailing list
+     members, and change the address we have subscribed to the list.
+
+</UL>
+
+<P>
+
+The Kiwi system works was designed and tested on RedHat Linux 5.2 and
+RedHat 6.2 systems, and is geared toward UNIX systems. 
+
+<P>
+
+All software and other files included with Kiwi infringe on no patents,
+and is released to the public domain. 
+
+<P>
+
+The file <A href="Files.html">Files.html</A> is a "Quick start" guide
+geared for experienced Unix users.
+
+<P>
+
+The file <A href="Start.html">Start.html</A> gives detailed information on
+how to set up a Kiwi-enabled mailbox. 
+
+<P>
+
+The file <A href="Webmailto.html">Webmailto.html</A> gives detailed
+information on placing Kiwi-enabled email addresses on your web pages.
+
+<P>
+
+The file <A href="Spec.html">Spec.html</A> describes the binary format
+that Kiwi uses.
+
+<P>
+The file <A href="Faq.html">Faq.html</A> answers some frequently asked 
+questions about the Kiwi program.
+
+<P>
+The file <A href="Lists.html">Lists.html</A> explains how to generate 
+permanent Kiwi cookies for mailing lists, web forms, and other places where
+a unique permanrnt Kiwi cookie is desired.
+
+<P>
+The file <A href="Bouncemail.html">Bouncemail.html</A> explains how to set up
+Kiwi to send bounce messages to people who email an address with an invalid
+Kiwi cookie.
+
+<P>
+The file <A href="Kiwirc.html">Kiwirc.html</A> describes all of the 
+parameters that can be set in the <CODE>.kiwirc</CODE> file.
+
+<P>
+The file <A href="Env.html">Env.html</A> describes all of the environmental
+variables that the Kiwi software suite sets.
+
+<P>
+
+If you have any comments or suggestions about Kiwi, you can mail me from this
+web page: 
+
+<BLOCKQUOTE>
+
+	<A href=http://www.samiam.org/ssi/mailme.shtml>
+	http://www.samiam.org/ssi/mailme.shtml</A>
+
+</BLOCKQUOTE>
+
+</BODY></HTML>

@@ -1,0 +1,162 @@
+
+                               The .kiwirc file
+
+   The  .kiwirc  file is used by the Kiwi spam-protection program to read
+   configuration  information.  The  location  of  the  .kiwirc  file  is
+   determined thusly:
+     * If  the  environmental  variable  KIWIRC  is defined, the value of
+       KIWIRC is the location of the kiwirc file.
+     * Otherwise, if the environmental variable HOME is defined, look for
+       a file named .kiwirc in the directory HOME points to.
+     * Finally,  determine  the uid that the kiwi spam-protection process
+       is running as (using geteuid), find out the home directory of that
+       uid, and look for a .kiwirc file there.
+
+   The Kiwirc file has the following syntax:
+     * Lines  containing a # character do not parse any information at or
+       after  the # character. In other words, comments in a .kiwirc file
+       are  started with the # character. Exception: When the # character
+       is  quoted  (Example:  "#"),  the hash is treated does not begin a
+       comment.
+     * Lines  exist  in  one  form:  A  variable  name  (containing  only
+       alphanumeric  characters),  followed  by  zero or more white space
+       characters (space or tab), followed by an = sign, followed by zero
+       or  more  white  space  characters,  followed by the value for the
+       variable  (either  quoted  with the " character or containing only
+       alphanumeric characters).
+
+   An alphanumeric character is one of the following:
+     * A letter in the English language, either upper case or lower case
+     * A number in the English language
+     * The character - or _
+
+   The  following  variable  names  are accepted by version 2 of the Kiwi
+   spam protection suite:
+
+     kiwi_qmail
+     kiwi_sendmail_path
+     kiwi_days_short
+     kiwi_days_mid
+     kiwi_days_long
+     kiwi_forward
+     kiwi_append
+     kiwi_my_mailbox
+     kiwi_my_address
+     kiwi_maillog
+     kiwi_key
+     kiwi_password
+     kiwi_mid_process
+     kiwi_bouncemail
+     kiwi_utf8_output
+     kiwi_inbound_process
+
+   The meaning of the variable names are as follows:
+
+kiwi_qmail
+
+   If  set to TRUE, this tells the Kiwi spam protection suite that we are
+   running  Qmail  instead  of  Sendmail.  Cookies  are  delimited by a -
+   instead  of  a  +,  and  the  environmental variable DTLINE is used to
+   determine what email address an incoming message was delivered to.
+
+kiwi_sendmail_path
+
+   The  location  of  sendmail on our system. On Linux systems, this will
+   usually  have the value /usr/sbin/sendmail. On most other Unices, this
+   will generally have the value /usr/lib/sendmail.
+
+kiwi_days_short
+
+   The  number  of  days before a message with a short timeout times out.
+   This number is an integer.
+
+kiwi_days_mid
+
+   The  number  of days before a message with a medium timeout times out.
+   This number is an integer.
+
+kiwi_days_long
+
+   The  number  of  days  before a message with a long timeout times out.
+   This number is an integer.
+
+kiwi_forward
+
+   If  set  to  TRUE,  accepted  mail  is forwarded to the address set by
+   kiwi_my_address.  This should not be set to TRUE if kiwi_append is set
+   to TRUE.
+
+kiwi_append
+
+   If  set  to  TRUE,  accepted  mail  is appended to the file pointed to
+   kiwi_my_mailbox. This should not be set to TRUE if kiwi_forward is set
+   to TRUE.
+
+kiwi_my_mailbox
+
+   The file to append if kiwi_append is set to TRUE.
+
+kiwi_my_address
+
+   The  email  address to forward mail to if kiwi_forward is set to TRUE.
+   If kiwi_mid_process or kiwi_inbound_process is set, this is the single
+   argument given to the respective process.
+
+kiwi_maillog
+
+   The  log  file  used by Kiwi to make a note of messages that have been
+   rejected.
+
+kiwi_key
+
+   The encryption key used by Kiwi.
+
+kiwi_password
+
+   If  the  Kiwi  cookie  someone  uses  to  send  mail  has the value of
+   kiwi_password,  the  message is accepted without checking the value of
+   the cookie.
+
+kiwi_mid_process
+
+   If a message is accepted by the Kiwi software suite, and the encrypted
+   cookie  is  a MID TIMEOUT cookie, and this value is set to a non-blank
+   value,  then the accepted message will be piped to the program pointed
+   to  by  kiwi_mid_process  with  a  single  argument  of  the value for
+   kiwi_my_address.   This   overrides   the   value   of   kiwi_forward,
+   kiwi_append,  and  kiwi_inbound_process in the case of messages with a
+   MID TIMEOUT cookie.
+
+kiwi_bouncemail
+
+   If  a  message  is  not  accepted  by  the  Kiwi  software  suite, and
+   kiwi_bouncemail  is  set,  then  the  person  sending the message will
+   receive  a copy of the file pointed to by kiwi_bouncemail, followed by
+   the message they sent.
+
+kiwi_inbound_process
+
+   If a message is accepted by the Kiwi software suite, and this value is
+   set  to  a non-blank value, then the accepted message will be piped to
+   the  program pointed to by kiwi_inbound_process with a single argument
+   of  the  value  for  kiwi_my_address.  This  overrides  the  value  of
+   kiwi_forward and kiwi_append.
+
+kiwi_return_path
+
+   If  this  is  set,  the Return-Path header of all mail sent out by the
+   Kiwi  software  suite  is  set  to this value. If this is not set, the
+   Return-Path  header of all mail sent out by the Kiwi software suite is
+   set to 'nobody@example.com'. Since some machines' spam filters require
+   a  domain  the  resolves  in  the return path, this should be set to a
+   known email address, perhaps one that silently discards mail.
+
+   Note:  This  only  works  on  Qmail systems. On sendmail systems, give
+   sendmail  an  argument  of -f, followed by the desired return-path, to
+   change the return-path.
+
+kiwi_utf8_output
+
+   If  this  is  set  to  "TRUE",  Kiwi will output utf-8 when displaying
+   decoded  cookies  with five-letter messages instead of the default iso
+   8859-1

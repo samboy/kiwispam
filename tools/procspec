@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+
+# A small program that gets rid of the chart in the text version of the 
+# spec file, since Lynx can not handle tables.
+
+$print = 1;
+
+while(<>) {
+    $print = 0 if($_ =~ /<A name=chart/);
+    $print = 1 if($_ =~ /<A name=parity/);
+    $file .= $_ if($print);
+    }
+
+open(S,"> /tmp/procspec.html");
+print S $file;
+close(S);
+system("lynx -dump -nolist /tmp/procspec.html");
+unlink("/tmp/procspec.html");
+

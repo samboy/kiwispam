@@ -1,0 +1,22 @@
+This is a program designed to deliver mail on /var/spool/mail-based
+systems in a secure manner.  This program accepts input from the
+standard input, and appends the standard input to the file
+/var/spool/mail/{username}, where {username} is the username of the 
+process which invokes dropmail.  
+
+For security reasons, the mail spool directory is hardcoded in to the
+dropmail binary.  Please change the dropmail.h file before compiling 
+dropmail if using a system which places mail in a different directory 
+than /var/spool/mail.
+
+The resulting binary dropmail needs to have the minimum necessary
+privledge on your system to create new files in /var/spool/mail/
+On many systems, it will have 6755 permissions (group SUID), and
+be a member of the "mail" group.
+
+Once these elevated privledges are set up, dropmail should probably
+be placed in /usr/local/bin (or wherever you place binaries with
+elevated privledges).
+
+If you are running a Qmail system, there is no need to compile this
+binary.

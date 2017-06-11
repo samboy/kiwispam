@@ -1,0 +1,544 @@
+2.0.00: OK, it is time to put this program to rest.  I have been using
+        this program for over a year, and the original version of Kiwi for
+	two years before that, and have almost certaintly ironed out
+	all of the show-stopper bugs in the long time that I have been 
+	using Kiwi. 
+	
+	I have finally done something useful with the six remaining spots 
+	in five-letter messages.  While I used to have grandiose plans of 
+	having fancy multi-character modifiers, where one code would 
+	indicate that the remaining digits were numbers or modified 
+	characters, etc, in the end, I ended up simply putting six 
+	international characters there instead.  Namely, áéíóúñ: Spanish 
+	becuase I'm in México right now.  And, yes, via some ugly hackery, 
+	one can input either utf-8 or iso 8859-1 for these characters.  Also, 
+	one can specify in the .kiwirc whether to output decoded 5-letter 
+	messages in utf-8 or in ISO 8859-1.  The documentation has been
+	updated to reflect this new feature.
+
+	Bugfix: email addresses are now case-insensitive when using Qmail.
+
+	I also corrected a documentation error with regards to Postfix.
+	In fact, Postfix can support +-style addressing.
+	
+	In addition, I finally finished the dropmail program, and updated 
+	the man pages to be current with the 2.x branch of Kiwi.
+
+        I used to have the original kiwi1 source here.  No longer.  People
+	who wish to look at the original kiwi1 source can download the 
+	kiwi-1.2.01.tar.gz file (which is the final release of the
+	original version of Kiwi).
+
+	This is going to be my final release of Kiwi.  This program never
+	"caught on", despite being in existence for more than three years,
+	and I'm too busy with other projects (such as MaraDNS) to work
+	on this any more.  The only thing that would motivate me to 
+	update this package is a security bug worth posting to Bugtraq.
+
+	It is time to move on.
+
+	One complaint that I never resolved is that Kiwi munges (adds cookies 
+	to) headers that it should not munge.  I am not going to resolve 
+	this issue.  However, if one wishes to add to the headers that are 
+	not munged, look for the comment "Various lines in the heaqder we 
+	do not munge" in the KiwiMain.c file, and add the appropriate 
+	headers that should not be munged there.
+
+	If you wish to become the maintainer of Kiwi, please let me know.
+
+	(2001.10.16)
+
+2.0-rc3: Corrected incorrect example in the js_lock and js_unlock
+         man pages.  Updated dropmail to use file locking.
+         (2001.02.14)
+
+2.0-rc2: Changed compile flag for the JessStr library from -g to
+         -O.  Dropmail.c now compiles and makes a simple binary
+         with elevated privledges needed top drop mail off in
+         /var/spool/mail/name in the case of /var/spool/mail/name
+         not existing. (2001.02.13)
+
+2.0-rc1: Made various size structures in the js_string structure 
+         unsigned ints, so we do not get unexpected behavior.
+         Added dropmail program, which will, before Kiwi-2.0 gold
+         gets release, will be documented and tested to work around
+         the security problems with a /var/spool/mail/name mailbox
+         store method. (2001.02.10)
+
+2.0-beta3: Added note that kiwi_return_path only works on Qmail systems.  
+           In order to minimize transcription errors, 1s are now parsed as 
+           'l's in cookies, and 0s are parsed as 'o's. (2000.11.21)
+
+2.0-beta2: Significant cleanups in the documentation.  This system has now
+           been tested on a sendmail system, and a bug w.r.t. running Kiwi on
+           a Sendmail system has been fixed.  Updated "make install" to use
+           its own script.  Updated default compile option to -O instead of 
+           -g.  Next: Write a secure "file appender" will will append mail
+           from the standard input in to /var/spool/mail/username.
+           (2000.11.01)
+
+2.0-beta1: Made manual pages for js_open_append, js_lock, js_unlock,
+           js_val, js_atoi, js_nonmatch,j s_nonmatch_offset, js_length,
+           js_qstr2js, and js_tolower.  Doc freeze: The only changes that
+           will be made are corrections to the code and to the documentation.
+           (2000.10.30)
+
+0.9.11: Updated CHANGELOG to include changes done in later versions of the
+        kiwi-1.x program.  Important bugfix:  Added new kvar, kiwi_return_path
+        which is the return-path for the emails the kiwi program sends out.
+        This is important because some machines on the internet do not accpet
+        mail from machines whose return-path values do not resolve.  Added
+        example_kiwirc.html document.
+        (2000.10.28)
+
+0.9.10: Fixed bad HTML in Env.html.  Added Env.html to list of files in 
+        Intro.html.  Updated publish script. (2000.10.27)
+
+0.9.09: Fixed bug where messages of valid but unknown type were silently 
+        discarded.  Now, these messages are bounced.  Finished
+        Env.html file.  (2000.10.27)
+
+0.9.08: Made program futureproof by having KIWI_DATA in the case of a
+        good password, by setting to the password instead of to "N/A".  
+        Began work on Env.html file. (2000.10.26)        
+
+0.9.07: Added more error correction when trying to open files.  Changed
+        permissions of src directory to 755 (700 perms no longer needed, 
+        now that the .kiwirc file contains the encryption key).  
+        Added Kiwirc.html document (2000.10.25)
+
+0.9.06: Feature freeze.  New new features will be added to the code until
+        the Kiwi-2.0.00 release.  Corrected js_open_read, js_open_write, and
+        js_open_append to be int functions instead of void functions, allowing
+        easy error finding when opening files to read/write.  Updated
+        js_open_(read|write) accordingly.  (2000.10.24) 
+
+0.9.05: Added a new feature: kiwi_inbound_process.  This works like 
+        kiwi_mid_process, but on all mail accepted by the Kiwi filter.
+        Added support for KIWI_FROM environmental variable. (2000.10.23)
+
+0.9.04: Fixed bug where messages with a mid timeout timed out after 
+        kiwi_days_long instead of kiwi_days_mid. (2000.10.20)
+
+0.9.03: Updated Spec.html to be current with planned future upgrades, and
+        to have a chart of decoded Kiwi cookie values.  (2000.10.19)
+
+0.9.02: Updated Webmailto.html document to reflect Kiwi 2.0 changes.  Some 
+        improvments to the setting up of environmental variables 
+        (A currently undocumented feature) (2000.10.19)
+
+0.9.01: Fixed Lists.html in docs to reflect changes done for the 2.0 release
+        (2000.10.17)
+
+0.9.00: kiwi_mid_process feature has been implemented.  HTML documentation
+        has been updated.  Now, the only things that need to be done are
+        man pages for all the js_string functions I have made since I last 
+        documented those functions, sendmail testing, bug fixes, and doc
+        fixes.  Version number jump to reflect the near-complete status
+        of the Kiwi2 software suite. (2000.10.17)
+
+0.4.06: Updated documentation to reflect changes done to Kiwi code.
+        Added 'make install' to the Makefile.  Once I add the kiwi_mid_process
+        feature, and make sure it works with Sendmail, we have a Kiwi-2.0.00 
+	release. (2000.10.14)
+
+0.4.05: Sucessfully tested and debugged append feature.  Now all we need
+        is kiwi_mid_process feature and updated docs. (2000.10.14)
+
+0.4.04: Ability to append to mailbox added.  Needs to be tested now 
+        (2000.10.14)
+
+0.4.03: Fixed bug in adding return-path header. (2000.10.14)
+
+0.4.02: Begin work on appending mailboxes (still not supported).  Fixed bug
+        in wrapper where real email address was visible in Return-Path
+        header. (2000.10.14)
+
+0.4.01: Fixed bug with the sending of bounce messages.  Now we send autoreplies
+        when someone send us mail to a timed out/bad cookie. (2000.10.10)
+
+0.4.00: Debugged forward() routine.  Tweaks to bounce routine, debugged 
+        bounce().  At this point, the program is ready for my personal use,
+        though not all of the features of kiwi1 are implememted yet
+        (notably, we still do not have mid_process nor do we have
+         the ability to append cleared mail to a file). (2000.10.10)
+
+0.3.18: Deliver() routine finished.  Forward() routine written. (2000.10.10)
+
+0.3.17: More infilter work.  Finished bounce() routine, working on deliver().
+        (2000.10.09)
+
+0.3.16: More infilter work.  Added js_open_append, js_lock, and js_unlock
+        calls, which need to be documented.  (2000.10.08)
+
+0.3.15: More infilter work. (2000.10.07)
+
+0.3.14: This job of mine is making infilter work painfully slow...
+        (2000.10.05)
+
+0.3.13: More infilter work.  Slowly but surely... (2000.10.04)
+
+0.3.12: More infilter work.  Beginning to process various results of
+        reading the headers (2000.10.03)
+
+0.3.11: More infilter work.  The mail header has been read.  Next: Cookie
+        processing. (2000.09.28)
+
+0.3.10: More infilter work.  (2000.09.27)
+
+0.3.09: Slowly working on infilter.  This will hopefully be ready
+        to debug one of these days (2000.09.27)
+
+0.3.08: First day at my new job.  Set up a bunch of js_string obejcts which
+        read their data from kvars.  (2000.09.25)
+
+0.3.07: Hung out with a buddy all weekend.  Preparing to code the infilter
+        by writing out, in detailed comments in KiwiMain.c, the exact design
+        for the input filter.  (2000.09.24)
+
+0.3.06: Debugged parseaddress routine.  Beginning work on the main input
+        filter. (2000.09.21)
+
+0.3.05: Added COOKIE_SIZE #define to KiwiMain, to eventually support
+        longer cookies (the data will stay 32-bit for now).  Finished up
+        parseaddress routine, which needs to be debugged.
+        (2000.09.20)
+
+0.3.04: Began work on infilter.  Wrote getaddress routine, which is more
+        elegant and rfc-compliant than the one I wrote for kiwi1. 
+        Wrote regression test which verified that getaddress works properly.
+        (2000.09.18)
+
+0.3.03: wrapper now sets the KIWI_STATUS environmental variable to have a
+        value of "OUTGOING" (2000.09.17)
+
+0.3.02: Added exit(0) at end of wrapper function, so that the MUA doesn't 
+        complain, which it may do w/o exiting with a 0.  Makefile cleanup.
+        (2000.09.14)
+
+0.3.01: Opps!  Fixed error in Makefile, suite fully compiles again.
+        (2000.09.14)
+
+0.3.00: I had a nice vacation with family in San Diego.  Wrapper now works.  
+        Fixed bug in KiwiMain.c w.r.t. Argv[0] parsing.  (2000.09.14)
+
+0.2.03: Added js_tolower function, needs to be decumented.  Continued work
+        on the outgoing sendmail wrapper. (2000.09.08)
+
+0.2.02: clicrypt now compiles again, corrected syntax errors. (2000.09.08)
+
+0.2.01: Began work on adapting the Kiwi1 wrapper code to the kiwi2 js_string
+        and .kiwirc framework. (2000.09.07)
+
+0.2.00: Finished adding ability to decode cookies on command line.  Bumping
+        version number up one to reflect this. (2000.09.06)
+
+0.1.03: Fixed bug in js_getline_stdin.  Adding ability to decode cookies
+        on the command line (2000.09.04)
+
+0.1.02: Updated js_create to return 0 on error instead of -1 (update docs).
+        Added js_val function (yet another function to document).  clicrypt
+        now has ability to encrypt 5-letter messages.  IP encryption now
+        checks to make sure ip is in a.b.c.d notation.
+        (2000.09.04)
+
+0.1.01: Improved argv[0] parsing so that it ignores any path leading to the
+        command.  Added support for it to process ip numbers, added js_atoi 
+        function (needs to be documented)
+        (2000.09.03)
+
+0.1.00: First release with real functionality.  This one reads data from a
+        .kiwirc file (the key, in this case) and is able to act like 
+        cryptday from Kiwi1, generating compatible cookie.  Bumped up minor
+        revision number to reflect existance of real functionality.
+        (2000.09.01)
+
+0.0.33: Fixed some bugs in KiwiMain.c.  Right now, Kiwi2 has almost the
+        functionality of the "cryptday" program in Kiwi1, along with the
+        ability to read a .kiwirc file and a safer string library.
+        (2000.08.31)
+
+0.0.32: Begin work on KiwiMain.c.  Added support for returning error number
+        (via pointer) in read_kiwirc function. (2000.08.30)
+
+0.0.31: read_kiwirc function created and debugged.  kiwi_goodjs has 
+        js_encoding test, returns fatal error if encoding is not JS_US_ASCII.
+        (2000.08.29)
+
+0.0.30: KiwiParse is even more pedantic.  Added functions that will allow
+        simple reading/writing of variables that kiwi will use in its 
+        running.  Added function that tries to locate the .kiwirc file
+        (2000.08.28)
+
+0.0.29: New routines that need to be documented: js_nonmatch, and 
+        js_nonmatch_offset.  KiwiParse is now far more pedantic, not
+        allowing unknown characters, an unknown number of quotes, etc.
+        Next: Write a routine that will parse lines from a kiwirc file,
+        and store the data thusly, making a note of lines that return
+        syntax errors. (2000.08.25)
+
+0.0.28: Continuing work on plugging up memory leaks, which actually
+        started as I was hunting down the bug the turned out to be in
+        js_match_offset.  Made KiwiParse more pedantic:  It now refuses
+        to allow multiple barewords before an equals sign.  Began work
+        on a js_nonmatch-style routines in JessStr.c (2000.08.25)
+
+0.0.27: Whoo hoo! KiwiParse.c works!  The bug fixes were rather minor, with
+        the exception of a bug in js_match_offset that looked for matches
+        one character beyond the end of the string.  Added parsetest.c, 
+        which makes sure parseline works as it should.
+        (2000.08.24)
+
+0.0.26: KiwiParse.c is finished being written, and now compiles.  Next, I have
+        to set up a bugtest for it.  (2000.08.24)
+
+0.0.25: More work on KiwiParse.c.  Looks like I am almost done with being
+        able to parse a single line of text in the kiwirc file.
+        (2000.08.23)
+
+0.0.24: Further work on KiwiParse.c.  Added function js_length to 
+        JessStr.c.  (2000.08.23)
+
+0.0.23: KiwiJS.c JessStrOS.c now actually compile (again).  Cheanged return
+        value when routines can not allocate memory from -1 to 0, since 0
+        is defined by the C language as the null pointer.  Reorganized files
+        for the up and coming near-complete rewrite of the Kiwi program.
+        Updated specification to have two new values for the decoded Kiwi
+        cookie: 0x00000000: An error occured when decoding the Kiwi cookie,
+        and 0x00000001: The Kiwi cookie is invalid (Bad parity, etc.)
+        Started work on KiwiParse program.  (2000.08.22)
+
+0.0.22: Corrected some of the groff code by looking at the -man macros
+        with "man groff_man".  Added a new set of routines: KiwiJS.c,
+        which has all of the core Kiwi encrypt/decrypt routines in
+        a js_string-friendly format.  Added js_qstr2js routine (needs
+        man page) (2000.08.20)
+
+0.0.21: Added and documented a couple more routines to the JessStr library:
+        js_space_chars and js_getline_stdin.  Corrected mistake in
+        js_buf_getline documentation.  Added the JessStr documentation to
+        my MANPATH, so I will be constantly looking at and correcting the
+        documentation as needed.
+        (2000.08.19)
+
+0.0.20: Yipee!  All of the man pages are completed, with some proofreading.
+        The troff language of UNIX man pages is enough to drive a man crazy,
+        I swear. (2000.08.18)
+
+0.0.19: Have most of the functions in JessStrOS.c written up as man pages.
+        Only a handful of man pages to go.  (2000.08.18)
+
+0.0.18: Finished up man pages for the rest of the functions in JessStr.c
+        We now have 18 man pages.  Next: The man pages for JessStrOS.c
+        and JessStrCP.c functions. (2000.08.18)
+
+0.0.17: Beginning work on man pages.  Made man pages for js_create,
+        js_destroy, js_destroy_force, js_get_encode, js_octets,
+        js_set_chsize, and js_set_encode. (2000.08.17)
+
+0.0.16: js_buf_getline now looks clean.  I verified that it acts the same,
+        regardless of buffer size, and that it doesn't act weird when a 
+        newline appears right at the end of a buffer.  Updated JessStr.h
+        to have functions prototypes for all functions in the js library.
+        Changed the js_buf_getline test in tests.c.  Next: Start writing
+        man pages for all of the js functions. (2000.08.17)
+
+0.0.15: Corrected a number of bugs in js_buf_getline.  Works with the simple
+        case of a standard text file, but may bug out in certain esoteric
+        cases (such as possibly the last character in a buffer being a 
+        newline). (2000.08.17)
+
+0.0.14: Enjoyed the LinuxWorld Expo yesterday (I call it the Linux carnival).
+        Corrected bug in js_set_chsize which could cause overflows.  Added 
+        js_newline_chars, js_copy, js_buf_getline, js_buf_read, and the 
+        number and eof values to the js_file structure.
+        (2000.08.16)
+
+0.0.13: Added js_read, js_write, and js_close.  Added JS_ERROR and JS_SUCCESS
+        as #define constants.
+        (2000.08.14)
+
+0.0.12: Changed name JessicaString to js_string (makes typing easier)
+        Added js_js2str, js_open, js_open_read, and js_open_write
+        (2000.08.14)
+
+0.0.11: Updated kiwi-specific files to come from kiwi-1.2.01, the most recent
+        kiwi-1.x.x release. Added js_substr function.  Added
+        multi-octet tests, and test for js_substr function. (2000.08.11)
+
+0.0.10: More regression tests on the match library, added publish script to 
+        make copying this file to my web server easier. (2000.08.11)
+
+0.0.09: Some more regression tests, bug fixes in js_fgrep_offset and
+        js_insert (one too many "+ counter" thingys in the core loops)
+        as a result of bugs the regression tests are making appear.
+        (2000.08.11)
+
+0.0.08: Beginning the various regression tests for the Jessica String 
+        library. (2000.08.10)
+
+0.0.07: Yipee! The Jessica String library compiles!  Makefile added, corrected
+        all the minor syntax errors that gave it compile warnings or errors.
+        Now, I need to build up a test suite to make sure the string library
+        works. (2000.08.08)
+
+0.0.06: Even more enhancments to the JessicaString library.  I am ready
+        to set up some regression tests for the string library (2000.08.08)
+
+0.0.05: More enhancments to the JessicaString library.  One of these days,
+        this will be usable. (2000.08.08)
+
+0.0.04: Adding support for JessicaString library: A secure library so I 
+        don't have to constantly worry about buffer overflows (2000.08.05)
+
+0.0.03: Setup example kiwirc file for up and coming kiwi rc file which will
+	allow runtime changing of parameters.  Wrote perl script to change
+	legacy Kiwi config.h file to new kiwirc file (2000.07.??)
+
+0.0.02: Starting to code up Palm Pilot client support.  Export regs are no
+        more, so I am making this publically available.  Cleaned up Makefile
+        for legacy Kiwi in src. (2000.07.06)
+
+Kiwi2:  Made it so we can have version of the scramble and unscramble routines
+        which allow the key itself to be changed.  This will be used in a 
+        server-side authentication mechanism (the client will still precompute
+        the P boxes and S boxes)
+
+1.2.01: Fixed spelling errors in Bouncemail documentation. (Done 2000.07.06)
+
+1.2.00: Made sendmail wrapper properly wait() for sendmail to exit, so
+        we don't get zombies.  Made "Content-.*" and "Subject" headers
+        not add Kiwi cookies to email addresses.  Added documentation 
+        for BOUNCEMAIL feature. (Done 2000.07.06)
+
+1.1.01: Made cookies case-insensitive.  Made all main()s return ints so
+        RH6.2 gcc does not complain about main() returning a void.
+        (Done 2000.05.21)
+
+1.1.00: Added support for BOUNCEMAIL--the ability to send people a bounce
+        message should a kiwi cookie be rejected. (Done 2000.05.12)
+
+1.0.04: Changed CHANGELOG to have newest changes at top of list.  Updated
+        FAQ to reflect the fact that the ITAR anti-crypto laws are no more.
+        (Done 2000.05.11)
+
+1.0.03: Yipee!  As I understand it, the !@#$ ITAR regulations are no more.
+        This program can now be made freely available.  I have added support
+        for one-time passwords to the spec (which won't be used by the email
+        package, per se)
+
+1.0.02: Argh....we can not distribute this internationally yet (sigh), so I
+        changed the docs back.  I also have cleaned up some of the bugs in
+	infilter.c (removed the last double-last-line bug), and improved the
+	error handling (sendmail and usenet filter pipes now look for
+	errors when a write is done).
+
+1.0.01: Changed Intro.html to reflect the fact that Kiwi can now be 
+        internationally distributed.
+
+1.0.00: Fixed bug that caused last line of message filtered by Kiwi to
+        be printed twice.  Changed documentation to reflect the fact that
+	I can now distribute the source code to Kiwi internationally.
+
+0.9.0:  Added question and answer #4 to FAQ.  Begin documentation freeze--the
+        only changes to the documentation will be corrections, and additional
+	questions and answers in the FAQ.
+
+0.8.14: Added man-page style documentation.  Added Lists.html link to 
+        Intro.html.  Made FILES current.
+
+0.8.13: Fixed bug where outgoing mail wrapper did not correctly hanldle
+        multi-line "To" and "Cc" headers.
+
+0.8.12: Added MID_PROCESS feature.  I know I promised no new features,
+        but realized that this feature was essential for Kiwi to function
+        as an effective Spam-fighting tool.  This feature allows mail sent
+        in reply to Usenet posts to be more heavily filtered.  Changed
+        documentation to reflect existance of new feature.
+
+0.8.11: Made revisions to Webmailto.html.  Added 'make install' to make
+        documentation easier to understand.  Gave src/ directory 700
+        perms.  Modified documentation to Start.html to reflect the
+        the use of make install.  Added statement of being under no
+        warranty in the file WARNINGS.  Updated other documentation files
+        to reflect existance of Webmailto.html file.  Ran documentation
+        through spell checker--only a few misspelled words.  Added
+        Lists.html file, which describes how to use msgcrypt for permanent
+        email address used to subscribe to mailing lists.
+
+0.8.10: Added new document called Webmailto.html, which talks about
+        placing Kiwi-enabled addresses on web pages.
+
+0.8.9: Index added to Start.html, other documentation cleanups.
+       Index added to Files.html and made in to a "Quick start" guide.
+
+0.8.8: Updated FILES to be current.  Corrected formatting errors in 
+       Start.html, and updated Intro.html to have pointer to Start.html
+
+0.8.7: Changed infilter program to have error checking when opening and
+       writing to an incoming mailbox.
+
+0.8.6: Added Start.html document, which is a guide that walks someone
+       through enabling their email account to have Kiwi capabilities.
+       Made minor correction to Spec.html document.  Gave html and text
+       documentation separate directories.
+
+0.8.5: Added SUNOS.patch file which can be used to compile Kiwi on SunOs 
+       machines (Tested on a SunOs 4.1.4 system with Gcc 2.5.8).  Patched
+       wrapper.c to not munge "Bcc" and "In-Reply-To" lines, and to use
+       appropriate "received" line to see just what "+" email address message
+       was delivered to on Sendmail systems.
+
+0.8.4: Added comments to the source code.  Added a full description of
+       the Kiwi specification, complete with test vectors, to the 
+       documentation, and converted the specification into HTML.
+       Fixed bug in Makefile where scramble.c was not dependent on
+       make_scramble.c.  Makefile added to doc directory, to make
+       updating the text files (based on the html files) automatic.
+       Added Faq to documentation.
+
+0.8.3: Fixed Makefile to remove cryptdate.o object file when "make clean"
+       is invoked.
+
+0.8.2: Did code cleanup, making cryptdate function instead of having each
+       program that needs to make an encrypted cookie recycle the same "add
+       parity, encrypt, and convert to ASCII" code.  Added comments to code.
+
+0.8.1: Added KUDOS files, where I give credit to people whose ideas made
+       Kiwi possible.  Rearranged program in to directories for source,
+       tools, and documentation, and updating FILES to reflect the changes.
+       Updated and added documentation. 
+
+0.8.0: Fixed bug where PASSWORD had to be defined, workaround added so
+       PASSWORD does not need to be defined.  Fixed bug where encryption
+       key was directly visible in the binary compile of all programs (now
+       that the key schedule setup is done during compile time, there is no
+       need for the key to be in the binaries).  Fixed bug where program
+       would cause a broken pipe in certain circumstances.  General code 
+       cleanup and improved commenting.
+
+0.7.3: Fixed bug where Kiwi would not follow the Blowfish specification 
+       with passwords longer than 28 characters.  Added support for
+       PASSWORD, so people can have email addresses like 
+       name+hello@domain.com, which they can give to friends.
+       Started code freeze--no new features will be added until after
+       kiwi-1.0.0 is released, and the only changes will be bug fixes and
+       improved documentation.
+
+0.7.2: Made Blowfish key setup no longer use OpenBSD source code.  All of 
+       the files included with Kiwi are now public domain.
+
+0.7.1: Fixed some bugs in the Makefile, and a bug in infilter.c where mail
+       previously delivered to a Qmail system would not get delivered.  
+       Updated FILES, SPECIFICATION, and RELEASE to be current.
+
+0.7.0: Sped up encoding/decoding of data by recomputing subkeys and sboxes
+       at compile time, this also uses no OpenBSD routines in code. (Except
+       for the code that calculates the subkeys and sboxes.)
+
+0.6.6: Fixed a bug that direct file append would not correctly put
+       the "Delivered-To" line in the headers when using a QMAIL system
+
+0.6.5: Added support for five-letter message data type.
+       config.h separated from kiwi.h header file.
+

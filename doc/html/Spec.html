@@ -1,0 +1,479 @@
+<HTML><HEAD><TITLE>Kiwi Specification version 1.0</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+</HEAD><BODY>
+
+<H1>Kiwi Specification Version 1.9.03</H1>
+
+<A name=terms>
+<H2>Terminology</H2>
+
+<P>
+
+The kiwi 32-bit encrypted message will be called, in this paper, a
+<I>cookie</I>. 
+
+<P>
+
+A person attempting to cryptoanalyze this spec will be called a
+<I>spammer</I>.  Each cookie will have 32 bits of encrypted data, and
+three bits of parity. 
+
+<A name=plaintext>
+<H2>Determining the plaintext</H2>
+
+The 32 bits of plaintext has two sections: 
+
+<UL>
+
+<LI> A 4 bit (or longer) header telling us the kind of data being 
+encrypted. 
+
+<P>
+<LI> 28 (or less) bits of data
+
+</UL>
+
+<P>
+
+The header field currently can have one of the following data types:
+
+<UL>
+
+<LI> A four-bit header of "1000" ('8' in hex), "1001" ('9' in hex), or "1010"
+  ('A' in hex) indicates that the remaining 28 bits are a unix time stamp
+  with 28 bits of accuracy (the time stamp increments every 16 seconds).
+  The reason why the time stamp increments so quickly is because this
+  is the default stamp used for outgoing mail/news, and we want each
+  mail to almost always have a different stamp.  When the 4-bit header is 8,
+  we want the email address to have a short (72 hour) time out, when the
+  4-bit header is 9, we want a medium (2 week) timeout, and when
+  the 4-bit header is A, we want a long (90 day) timeout.
+
+  <P>
+
+  Messages posted to Usenet should have a 2-week timeout header.  The Kiwi
+  package has the capacity to give messages with a 2-week timeout to a
+  separate mail filtering agent.  This allows us, to for example, pipe
+  such messages through the Procmail mail filtering agent, or through any 
+  of the various anti-spam filters.
+
+<P>
+<LI> A four bit header of "1011" ('C' in hex) indicates that the remaining 28
+  bits are the 28 most significant bits of the IP used to view a given
+  email address.  This would typically be used on a web page, where the
+  email address on the web page would tell us where the person obtained the
+  email in question.
+
+<P>
+<LI> A 12-bit header of 0x7ff in hex indicates that the remaining 20 bits is a
+  timestamp that changes every 4096 seconds.  Useful for crypto mirrors where 
+  you want to change the location every hour or two.  
+
+<P>
+<LI> An 8-bit header of 0x7e will, in a future release of Kiwi, contain a
+     24-bit IP block, similiar to the 28-bit IP block a header of "1011" (C)
+     gives us.
+
+<P>
+<LI> A 7-bit header of 0x7c (or 0x7d) indicates that the remaining 25 bits 
+  are a five-letter "mailing list" designation, useful for permanent 
+  addresses you only want to give to one party.  Should you get spam
+  to one of these addresses, you can track where the spam came from.
+
+  <P>
+
+  Each letter takes up 5 bits, using a similiar mapping as the <A
+  href="#5bit">binary-to-ascii map</A> below.  However, in contrast to
+  the binary-to-ascii map, there are no numbers in this mapping.  Instead,
+  the last six spots use non-English letters, as follows:
+
+<PRE>
+
+11010           0x1a         á
+11011           0x1b         é
+11100           0x1c         í
+11101           0x1d         ó
+11110           0x1e         ú
+11111           0x1f         ñ
+
+</PRE>
+  
+  The first letter of the message is the left five bits of the 25-bit 
+  message, the second letter is the right five bits of the left 10 bits, 
+  and so on.
+
+<P>
+<LI> A 6-bit header of 0x78 (Which covers 0x78, 0x79, 0x7a, and 0x7b) 
+     indicates that the remaining 26 bits are a password which changes every
+     64-seconds.  This is useful for setting up security systems where you
+     want to have access be dependent on both the end-user knowing a password
+     and on having a portable program (Running on a Palm-sized or smaller
+     device) that can determine the one-minute password.
+
+<P>
+<LI> A decoded cookie with the value of 0x00000000 indicates that an
+     error occured (out of memory, etc.) when we attempted to parse the 
+     Kiwi cookie.
+
+<P>
+<LI> A decoded cookie with the value of 0x00000001 indicates that, when
+     we parse the cookie, we got a bad parity, or some other form of
+     invalid data, which needs to be rejected by the Kiwi program.
+
+<P>
+<LI> A decoded cookie with a value of 0x00000002 indicates that the cookie
+     should be accepted (usually because the "cookie", such as it is, is 
+     actually a valid password)
+
+<P>
+<LI> A decoded cookie with a 4-bit header of '3', '4', '5', or '6' may be 
+     used for any purpose deemed suitable by someone making their own
+     version of Kiwi.  These headers will not be used by any official release
+     of the Kiwi software suite.
+
+</UL>
+
+<P>
+
+I have this idea that is not yet implemented:
+
+<UL>
+
+<LI> A four bit header of "1011" ('B' in hex) indicates that the remaining 28
+  bits are divided in to a 16-bit hash of the subject line of the message,
+  and a 12-bit time stamp (This gives us a time stamp that increments
+  every 12.14 days).  This allows us to discard any replies that do not
+  have the subject in the header, or are older than a given age (+/- six
+  days)
+
+</UL>
+
+<A name=chart>
+<H2>A chart of Kiwi codes</H2>
+
+This is a chart of various headers in the Kiwi spec and the kind of message 
+they indicate.  The row is the most significant 4 bits of the first octet
+of a decoded Kiwi message, and the column is the next 4 bits of the decoded
+Kiwi message:
+
+<TABLE BORDER=1>
+<TR ALIGN=CENTER>
+<TD> 
+<TD>0<TD>1<TD>2<TD>3<TD>4<TD>5<TD>6<TD>7<TD>8<TD>9<TD>A<TD>B<TD>C<TD>D<TD>E<TD>F
+
+<TR ALIGN=CENTER>
+<TD>0
+<TD>System messages
+<TD COLSPAN=15>Reserved
+
+<TR ALIGN=CENTER>
+<TD>1
+<TD COLSPAN=16>Reserved
+
+<TR ALIGN=CENTER>
+<TD>2
+<TD COLSPAN=16>Reserved
+
+<TR ALIGN=CENTER>
+<TD>3
+<TD COLSPAN=16>vendor-specific data
+
+<TR ALIGN=CENTER>
+<TD>4
+<TD COLSPAN=16>vendor-specific data
+
+<TR ALIGN=CENTER>
+<TD>5
+<TD COLSPAN=16>vendor-specific data
+
+<TR ALIGN=CENTER>
+<TD>6
+<TD COLSPAN=16>vendor-specific data
+
+<TR ALIGN=CENTER>
+<TD>7
+<TD COLSPAN=8>reserved
+<TD COLSPAN=4>One-minute password
+<TD COLSPAN=2>5-letter message
+<TD COLSPAN=1>24-bit IP block
+<TD>One-hour password
+
+<TR ALIGN=CENTER>
+<TD>8
+<TD COLSPAN=16>Short timeout
+
+<TR ALIGN=CENTER>
+<TD>9
+<TD COLSPAN=16>Mid timeout (Usenet messages)
+
+<TR ALIGN=CENTER>
+<TD>A
+<TD COLSPAN=16>Long timeout (Email messages)
+
+<TR ALIGN=CENTER>
+<TD>B
+<TD COLSPAN=16>Reserved (Usenet messages)
+
+<TR ALIGN=CENTER>
+<TD>C
+<TD COLSPAN=16>28-bit IP block
+
+<TR ALIGN=CENTER>
+<TD>D
+<TD COLSPAN=16>Reserved
+
+<TR ALIGN=CENTER>
+<TD>E
+<TD COLSPAN=16>Reserved
+
+<TR ALIGN=CENTER>
+<TD>F
+<TD COLSPAN=16>Reserved
+
+</TABLE>
+
+
+<A name=parity>
+<H2>Calculating the parity</H2>
+
+<P>
+
+The three parity bits are calculated with the 32-bit plaintext, where each
+parity bit XORs 1/3 of the bits in the plaintext.  The purpose of the
+parity bits is to make it 8 times as difficult for a spammer to generate a
+random cookie that decrypts to valid data. 
+
+<P>
+
+The parity bits are calculated thusly:
+
+<PRE>
+
+        +--+---+--+--+---+--+--+---+--+------- Bit one of parity
+        |  |   |  |  |   |  |  |   |  |
+        V  V   V  V  V   V  V  V   V  V
+Data: xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx
+      ^^ ^^ ^^  ^^ ^^ ^ ^ ^^ ^^  ^^ ^^ ^^
+      || || ||  || || | | || ||  || || ||
+      +|-+|-+|--+|-+|-+-|-+|-+|--+|-+|-+|----- Bit two of parity
+       |  |  |   |  |   |  |  |   |  |  |
+       +--+--+---+--+---+--+--+---+--+--+----- Bit three of parity
+
+</PRE>
+
+Where each bit of parity is an XOR of one third of the bits in the 32-bit
+plaintext data field.  You may also imagine a + in the above diagram as an
+XOR operation.
+
+<A name=crypto>
+<H2>Encrypting the plaintext</H2>
+
+<P>
+
+The plaintext is encrypted with a 32-bit variant of the Blowfish
+encryption algorithm.  In this variant, we can have a key up to 28 bytes
+(224 bits) long, encrypt blocks that are 32-bits long, and have 16 entries
+each 16 bits long in the four s-box tables. The s-box tables use a total
+of 128 bytes, as opposed to 4096 bytes in the full 64-bit blowfish.
+
+<P>
+
+We use 16 rounds, and have 18 P-boxes, each of which is 16 bits long.  The
+P-boxes and S-boxes combined take up a total of 164 bytes of memory.  As
+opposed to the 521 encryptions that the full 64-bit Blowfish uses to
+initialize the P-boxes and S-boxes, this variant of Blowfish only needs to
+perform 41 encryptions. 
+
+<P>
+
+The initial values for the P and S boxes are as follows:
+
+<PRE>
+
+S-BOX 1:
+
+0xd131, 0x98df, 0x2ffd, 0xd01a,
+0xb8e1, 0x6a26, 0xba7c, 0xf12c,
+0x24a1, 0xb391, 0x0801, 0x858e,
+0x6369, 0x7157, 0xa458, 0xf493,
+
+S-BOX 2:
+
+0x4b7a, 0xb5b3, 0xdb75, 0xc419,
+0xad6e, 0x49a7, 0x9cee, 0x8fed,
+0xecaa, 0x699a, 0x5664, 0xc2b1,
+0x1936, 0x7509, 0xa059, 0xe418,
+
+S-BOX 3:
+
+0xe93d, 0x9481, 0xf64c, 0x9469,
+0x4115, 0x7602, 0xbcf4, 0xd4a2,
+0xd408, 0x3320, 0x43b7, 0x5000,
+0x1e39, 0x9724, 0x1421, 0xbf8b,
+
+S-BOX 4:
+
+0x3a39, 0xd3fa, 0xabc2, 0x5ac5,
+0x5cb0, 0x4fa3, 0xd382, 0x99bc,
+0xd511, 0xbf0f, 0xd62d, 0xc700,
+0xb78c, 0x21a1, 0xb26e, 0x6a36,
+
+P-BOXes:
+
+0x243f, 0x85a3, 0x1319, 0x0370,
+0xa409, 0x299f, 0x082e, 0xec4e,
+0x4528, 0x38d0, 0xbe54, 0x34e9,
+0xc0ac, 0xc97c, 0x3f84, 0xb547,
+0x9216, 0x8979
+
+</PRE>
+
+<P>
+
+People with an internet connection may obtain a description of the
+Blowfish encryption algorithm at this location: 
+
+<BLOCKQUOTE>
+<A href=http://www.counterpane.com/bfsverlag.html>
+http://www.counterpane.com/bfsverlag.html</A>
+</BLOCKQUOTE>
+
+<A name=ascii>
+<H2> Converting the binary ciphertext in to an ASCII cookie</H2>
+
+<P>
+
+The 32-bits of ciphertext and three bits of parity are converted in to a
+7-digit ASCII string.  Each digit in the string corresponds to five bits
+of data in the ciphertext and/or parity.
+
+<P>
+
+The 32 bits of ciphertext and three bits of parity are divided thusly:
+
+<P>
+
+<CODE>X</CODE>: single bit of ciphertext<BR>
+<CODE>P</CODE>: Single bit of parity
+
+<PRE>
+
+
+                        /+-+++------------- Second byte of ASCII cookie
+             /+++-+-----||-|||------------- Byte four of ASCII cookie
+  /++++------||||-|-----||-|||------------- Byte six of ASCII cookie
+  |||||      |||| |     || |||
+  VVVVV      VVVV V     VV VVV
+xxXXXXXx xxxxXXXX XxxxxxXX XXXxxxxx PPP
+^^     ^ ^^^^      ^^^^^      ^^^^^ ^^^
+||     | ||||      |||||      ||||| |||
+\+-----|-||||------|||||------|||||-+++---- Byte seven of ASCII cookie
+       \-++++------|||||------|||||-------- Byte five of ASCII cookie
+                   \++++------|||||-------- Byte three of ASCII cookie
+                              \++++-------- First byte of ASCII cookie
+
+</PRE>
+
+<P>
+
+In other words, the first bite of the ASCII cookie is determined by the 
+right five bits of the ciphertext.  The second byte of the ASCII cookie
+is determined by the left five bits of the right ten bits of the 
+ciphertext.  The third byte of the ASCII cookie is determined by the left
+five bits of the right 15 bits of the ciphertext.  The fourth byte of the
+ASCII cookie is determined by the left five bits of the right 20 bits of
+the ciphertext.  The fifth and sixth byte of the cookie are determined by
+similar means.
+
+<P>
+
+The seventh, and final, byte of the ASCII cookie is determined by both the
+left two bits of the ciphertext, and the three bits of parity.  The right
+two bits of the final cookie byte are determined by the left two bits of
+the ciphertext, where the most significant bit of the ciphertext
+determines the second-least significant bit of the seventh cookie byte. 
+The left three bits of the final ASCII cookie are determined by the three
+parity bits, where the left-most bit of the cookie byte is determined by
+bit one of parity (see parity section above), the second bit from the left
+in the cookie byte by the second parity bit, and so on.
+
+<P>
+
+We convert five bits of binary data into ASCII using the following table: 
+
+<A NAME="5bit">
+
+<PRE>
+
+Binary value    Hex Value    ASCII mapping
+--------------  -----------  ---------------
+00000           0x00         a
+00001           0x01         b
+00010           0x02         c
+00011           0x03         d
+00100           0x04         e
+00101           0x05         f
+00110           0x06         g
+00111           0x07         h
+01000           0x08         i
+01001           0x09         j
+01010           0x0a         k
+01011           0x0b         l
+01100           0x0c         m
+01101           0x0d         n
+01110           0x0e         o
+01111           0x0f         p
+10000           0x10         q
+10001           0x11         r
+10010           0x12         s
+10011           0x13         t
+10100           0x14         u
+10101           0x15         v
+10110           0x16         w
+10111           0x17         x
+11000           0x18         y
+11001           0x19         z
+11010           0x1a         2 
+11011           0x1b         3
+11100           0x1c         4
+11101           0x1d         5
+11110           0x1e         6
+11111           0x1f         7
+
+</PRE>
+
+<P>
+
+Note that we do not have the numbers '0' and '1' in the mapping.  This is
+to avoid confusion with the letter 'o' and the number '0', and the letter
+'l' and the number '1'.
+
+<A name=vectors>
+<H2> Test Vectors </H2>
+
+<P> 
+
+Test vectors for the Kiwi specification are available in the file
+<A href=Test_vectors.html>Test_vectors.html</A>.
+
+<A name=password>
+<H2> Password-protected email addresses </H2>
+
+<P>
+
+For email addresses to give to friends, we have support for special email
+addresses, in the form joe+password@domain.com (or
+joe-password@domain.com), where the end user determines the password. 
+Mail sent to a password protected email address will be delivered without
+attempting to decrypt the cookie. 
+
+<P>
+
+Care should be taken to not make any password-protected email addresses
+visible where spammers can obtain the email address.  This includes not
+making the email address visible in Usenet posts, web pages, in finger
+information, as the address used to subscribe to a mailing list, nor
+anywhere else a spammer may obtain the email address.
+
+</BODY></HTML>
+

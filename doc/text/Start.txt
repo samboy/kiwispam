@@ -1,0 +1,558 @@
+
+                           Getting started with Kiwi
+
+Index
+
+    1. About this document
+    2. Kiwi-compatible systems
+    3. Setting up Kiwi
+         1. Determine your Mail Transport Agent
+         2. Determining + addressing ability (Sendmail systems)
+         3. Creating a Kiwi encryption key
+              1. The secpass program
+              2. Generating a key on a system which can not run secpass
+         4. Editing the .kiwirc file
+              1. Paste in the encryption key
+              2. Are we running Qmail or Sendmail?
+              3. Determining the location of Kiwi's log file
+              4. Determining a password
+         5. Compiling the Kiwi package
+         6. Adding a Kiwi encrypted cookie in outgoing mail
+         7. Setting up Kiwi to filter your incoming mail
+              1. Setting  up  Kiwi's  incoming  mail filter on a Sendmail
+                 system
+              2. Setting up Kiwi's incoming mail filter on a Qmail system
+              3. Verifying that Kiwi's incoming filter works
+              4. Action  to  take  if  Kiwi's  incoming  filter  does not
+                 function
+    4. Further capabilities of Kiwi
+
+About this document
+
+   The  purpose  of  this  document  is to guide you through setting up a
+   basic  Kiwi-enabled  mailbox  on  a system that is compatible with the
+   Kiwi software package.
+
+Kiwi-compatible systems
+
+   In  order  to use the Kiwi package (described in Intro.html), you will
+   need the following:
+     * A Unix-compatible system.
+     * An internet connection with a static IP, or access to an ISP shell
+       account.
+     * Said  machine  needs to be the primary mail exchanger for at least
+       one  host  name. If you have an ISP shell account, it will usually
+       have this.
+     * The  machine  needs  to  use either the Qmail mail transport agent
+       (MTA),   or  a  recent  version  of  the  Sendmail  MTA  with  '+'
+       addressing,    where   name+word@domain.com   is   equivalent   to
+       name@domain.com.   Other   MTAs  which  support  sendmail-style  +
+       addressing will also work with Kiwi.
+     * You  will  need  a mail user agent that can change the location of
+       the sendmail mail transport agent. With some mail user agents, you
+       will need to recompile the program to change this location.
+     * While your choice of login shell will not affect the functionality
+       of  Kiwi, the shell commands shown here assume use of the GNU Bash
+       shell.
+
+   The Kiwi package has been tested on the following systems:
+     * A RedHat Linux 5.2 system running Qmail
+     * A RedHat Linux 6.2 system running Qmail
+
+   There is no guarantee that Kiwi will compile, much less run, on other,
+   untested  Unix systems. People that try to get Kiwi to run on unlisted
+   systems are encouraged to email me their successes or failures.
+
+Setting up Kiwi
+
+  Determine your Mail Transport Agent
+
+   You  need to determine if your system is running Qmail or Sendmail. To
+   do this, type in the following command at the Unix prompt:
+
+   $ telnet localhost 25
+
+   If you see something similar to:
+
+   Trying 127.0.0.1...
+   Connected to localhost.
+   Escape character is '^]'.
+   220  host.domain.com ESMTP Sendmail 8.8.5-r-beta/8.8.5/(v1.02); Mon, 5
+   Oct 1998 09:11:36 -0700 (PDT)
+
+   Then you are running a Sendmail system. (Note the word Sendmail above)
+
+   If you see something similar to:
+
+   Trying 127.0.0.1...
+   Connected to localhost.
+   Escape character is '^]'.
+   220 host.domain.com ESMTP
+
+   Then you are running a Qmail system.
+
+   To exit from this telnet, type in the following:
+
+   QUIT
+
+   This will terminate your telnet session.
+
+   If  you  see  a response different from either of the above responses,
+   then  you are running a system that is neither Sendmail nor Qmail. The
+   Kiwi system is currently only tested on Sendmail and Qmail systems.
+
+  Determining + addressing ability (Sendmail systems)
+
+   Qmail users may skip to the next section.
+
+   If  your system is a system running the Sendmail mail transport agent,
+   you  will  need  to determine if you system has the ability to utilize
+   '+' addressing.
+
+   To determine this, you will need to send a message to yourself.
+
+   Using  the  Mail  User Agent of your choice, be it Elm, Pine, Berkeley
+   Mail,  Mutt, XFMail, Kmail, or any other Mail User Agent, send mail to
+   an address in the form:
+
+   user+word@host.domain.com
+
+   Where user@host.domain.com is your email address. For example, if your
+   email address was:
+
+   fred@example.com
+
+   You would send email to fred+word@example.com.
+
+   Next,  after  a wait of five minutes or so, check your mailbox. If you
+   received  the  message  sent  to  user+word@host.domain.com, then your
+   system has '+' addressing support, and should be compatible with Kiwi.
+   If,  instead, you got a message from Mailer-Daemon indicating that the
+   email  address  user+word@host.domain.com  does  not  exist,  than you
+   system  does not have '+' addressing support, and is incompatible with
+   Kiwi.
+
+  Creating a Kiwi encryption key
+
+   In order to use Kiwi with adequate security, it is important to set up
+   an  encryption key that is difficult to guess. People on Linux (or any
+   other system with /dev/random support) systems with Perl installed may
+   use  the  secpass program in the tools/ directory to generate a secure
+   encryption key.
+
+    The secpass program
+
+   To  run  the  secpass program, enter the tools/ directory, and type in
+   the following command at the shell prompt:
+
+     ./secpass
+
+   The output should be similar to the following:
+
+   If  it  pauses  here,  please  type  some random text to replenish the
+   random seed
+   Random password with 96 bits of entropy: jzsmGA.Mtep7-tDD
+
+   Make  a note of the random password, or key. On some systems, this can
+   be done by pasting the key in to the clipboard.
+
+   Note:  It  is important to paste the key actually generated by secpass
+   in  to the clipboard, and to not paste the above example key in to the
+   clipboard.
+
+    Generating a key on a system which can not run secpass
+
+   Some systems will not be able to run the secpass program.
+
+   People  on  such systems will need to generate their own random key. A
+   key should have the following characteristics:
+     * The key should be between 16 and 28 characters in length
+     * The  key  should  not  be  based  on  a dictionary word, any known
+       personal information about you, a quotation, or anything else that
+       could possibly be guessed.
+     * The   key  should  be  completely  random  letters,  numbers,  and
+       punctuation.
+     * The  key  should not use the punctuation symbol ". This is not for
+       security reasons, but to avoid syntax errors in the file .kiwirc
+
+   Once  a  suitable  key  is determined, the key should be noted. Again,
+   this  can  be  done  by  pasting  the  key in to the clipboard on many
+   systems. We will apply use this key in the next step.
+
+  Editing your .kiwirc file
+
+   In the directory src/, there is a file named example_kiwirc. This file
+   needs  to  be  copied  to  a  file  with the name .kiwirc in your home
+   directory, as follows:
+
+     cp example_kiwirc ~/.kiwirc
+
+   There  are  a  number  of  fields in this file that need to be changed
+   before  the  Kiwi  software  suite can be compiled. In order to change
+   these fields, the file needs to be edited with a text editor. One such
+   editor  is the pico editor. To edit the .kiwirc file with this editor,
+   enter your home directory, and type in the following command:
+
+     pico -w .kiwirc
+
+   Some fields need to be changed in the .kiwirc file.
+
+    Paste in the encryption key
+
+   The encryption key, as determined above, needs to be pasted in the key
+   field. This field is near the bottom of the .kiwirc file.
+
+   Take the line that looks like this:
+
+   kiwi_key = "XXXXXXXXXXXXXXXX"
+
+   And make it look like this:
+
+   kiwi_key = "encryption key"
+
+   Where encryption key is the encryption key generated above. Be sure to
+   have quotes around the encryption key (as seen above).
+
+    Are we running Qmail or Sendmail?
+
+   If  you  are  running  a Sendmail system, as opposed to a Qmail system
+   (see above), you will need to comment out the line that looks like:
+
+   kiwi_qmail = "TRUE"
+
+   So that it looks like:
+
+   # kiwi_qmail = "TRUE"
+
+    Do we want to forward this to another email address, or append this to our
+    mailbox?
+
+   Unless  you have another email address you wish to have mail that Kiwi
+   accepts  delivered  to, you will want to set up Kiwi to append mail to
+   your mailbox.
+
+   To  set  up  Kiwi  to  append  mail  to your mailbox, you will need to
+   determine the location of the mailbox on your system. This can usually
+   be determined by the following shell command:
+
+     echo $MAIL
+
+   On  Qmail systems, this will be in the form /home/username/Mailbox. If
+   this  is in the form /var/spool/mail/username, you will not be able to
+   set  up  Kiwi  to append mail to your mailbox. Instead, append it to a
+   file with a name like /home/username/.mailbox.
+
+   Note:  If  you are a system adminstrator that wishes to allow users to
+   append mail to /var/spool/mailusername in a secure manner, please look
+   at the dropmail program in the Kiwi src directory.
+
+   Paste  the  above  filename  using the clipboard functionality of your
+   system, and replace the line that looks like:
+
+   kiwi_my_mailbox "/var/spool/mail/yourusername"
+
+   With a line that looks like:
+
+   kiwi_my_mailbox = "mailbox"
+
+   Where mailbox is the location of your mailbox, as determined above. Be
+   sure to have quotes around the mailbox location (as seen above).
+
+   In  addition,  you  will  need  to  change  the  behavior of Kiwi from
+   forwarding to a valid email address to appending to your mailbox.
+
+   To do this, change the line that looks like:
+
+   kiwi_forward = "TRUE"
+
+   To look like:
+
+   # kiwi_forward = "TRUE"
+
+   And change the line the looks like:
+
+   # kiwi_append = "TRUE"
+
+   To look like:
+
+   kiwi_append = "TRUE"
+
+   Note:  It  is  important  to  have  only one of either kiwi_forward or
+   kiwi_append set to TRUE. Do not have both kiwi_forward and kiwi_append
+   set to TRUE.
+
+    The location of Sendmail on your system
+
+   You  will need to determine the location of the sendmail program, used
+   to  send out mail, on your system. On most systems, the default value,
+   /usr/lib/sendmail  will function. On some Linux systems, however, this
+   will need to be changed to /usr/sbin/sendmail.
+
+   To  determine  if /usr/lib/sendmail is present on your system, type in
+   the following command:
+
+     ls -l /usr/lib/sendmail
+
+   If you get output like:
+
+   ---s--x--x 3 root 589824 Sep 15 1997 /usr/lib/sendmail
+
+   or
+
+   lrwxrwxrwx   1   root   root  18  Oct  1  14:47  /usr/lib/sendmail  ->
+   /usr/sbin/sendmail
+
+   then /usr/lib/sendmail is a valid path for sendmail on your system.
+
+   If, on the other hand, you got a reply to the above ls -l like:
+
+   ls: /usr/lib/sendmail: No such file or directory
+
+   Then  sendmail  is  not located at /usr/lib/sendmail. On such systems,
+   sendmail  is  often  located  at  /usr/sbin/sendmail,  and this can be
+   determined with the ls -l command:
+
+     ls -l /usr/sbin/sendmail
+
+   where the output is similar to the above possible ls -l outputs.
+
+   Once you determine the location of sendmail on your system, change the
+   line that looks like:
+
+   kiwi_sendmail_path = "/usr/lib/sendmail"
+
+   To look like:
+
+   kiwi_sendmail_path = "location of sendmail"
+
+   Where location of sendmail is the location of sendmail on your system.
+   On  systems  where sendmail is located at /usr/lib/sendmail, the above
+   line does not need to be edited.
+
+    Determining the location of Kiwi's log file
+
+   If you wish to look at a log of messages rejected by Kiwi's mechanism,
+   you  will  need  to  determine the location of your home directory. To
+   have  Kiwi's log be a file called .maillog off of your home directory,
+   type in the following shell command:
+
+     echo ~/.maillog
+
+   The    output   of   this   command   should   look   something   like
+   /home/username/.maillog.   Once  you  determine  this  file  name  and
+   location, change the line in .kiwirc that looks like:
+
+   kiwi_maillog = "/home/yourusername/.maillog"
+
+   to look like:
+
+   kiwi_maillog = "location"
+
+   Where location is the location of ~/.maillog, as determined above.
+
+    Determining a password
+
+   This step is an optional step.
+
+   You may wish to allow personal friends to be able to email you without
+   them  needing  to  know  a  valid  encrypted cookie. Kiwi has password
+   support to allow this.
+
+   If  you  have  a  Kiwi  password  set  up, someone can send mail to an
+   address in the form:
+
+     user+password@host.domain.com
+
+   and  have  Kiwi  accept  the  mail  in  question. In the above example
+   address, user@host.domain.com is your base email address, and password
+   is your Kiwi password.
+
+   To  set  up a Kiwi password, determine a suitable password. A suitable
+   password should be a single word that is easy to remember, but hard to
+   guess. The password should not contain any spaces nor any punctuation.
+
+   Once  you  choose  a  suitable password, edit .kiwirc so that the line
+   that looks like:
+
+   # kiwi_password = "changeme"
+
+   looks like:
+
+   kiwi_password = "password"
+
+   Where password is the password that you have chosen.
+
+   Note: On Qmail system, the password-accepted email has this form:
+
+     user-password@host.domain.com
+
+   note the - instead of a +.
+
+  Compiling the Kiwi package
+
+   After  editing  the .kiwirc file, Kiwi can be compiled on most systems
+   by simply typing in the command
+
+     make 
+
+   To install Kiwi in to /usr/local/bin, type in this command next:
+
+     make install 
+
+   As  an  aside, you can determine the type of Unix system you have with
+   this command:
+
+     uname -a 
+
+  Adding a Kiwi encrypted cookie in outgoing mail
+
+   To  add  a  Kiwi-encrypted  cookie to the return email address on your
+   outgoing  mail,  set  up  your  mail  user  agent to send mail via the
+   wrapper program, instead of directly using sendmail. The procedure for
+   doing this depends on where you wish to place the wrapper program, and
+   on the mail user agent that you use.
+
+   If  you  use  the Pine mail user agent to read and send mail, edit the
+   file .pinerc in your home directory so that it has the following line:
+
+     sendmail-path=/usr/local/bin/wrapper -t
+
+   Note that Pine 3.89 is not compatible with the Kiwi package, since you
+   can  not  tell  Pine  3.89  to  use  another  program as your sendmail
+   program. More recent versions of Pine are compatible with Kiwi.
+
+   Note  also  that Pine has a lot of security problems, since it was not
+   written  with  security  in  mind. You may be better off using mutt to
+   read mail. Mutt has a mode that closely emulates the behavior of Pine.
+
+   After  setting  up  your mail user agent to send mail through the Kiwi
+   sendmail  wrapper instead of through sendmail, it is important to test
+   things  to  verify  that  an  encrypted cookie is added to your return
+   address in outgoing mail. To do this, simply send yourself a message.
+
+   The  return address on the message you just sent yourself should be in
+   the form:
+
+     user+cookie@host.domain.com
+
+   Where  user@host.domain.com  is  your  email  address and cookie is an
+   encrypted  cookie that looks like 2gbn5tn or gq4y5ci. For example, the
+   return  address  may look like fred+3qhstr7@example.com if your normal
+   email address is fred@example.com.
+
+   On Qmail systems, the return address will be in the form:
+
+     user-cookie@host.domain.com
+
+   Observe  a  '-'  symbol  instead  of a '+' symbol used to separate the
+   cookie from the username.
+
+  Setting up Kiwi to filter your incoming mail
+
+   This  is  the most dangerous part of setting up Kiwi. Once this is set
+   up,  all  email  sent to the Kiwi-enabled email address with neither a
+   valid  cookie nor the correct password will be discarded. In addition,
+   it  is  possible  to  lose  mail  if  Kiwi's  incoming  mail filter is
+   incorrectly set up.
+
+   The  procedure  for  doing  this  varies, depending on whether you are
+   using a Sendmail system or you are using a Qmail system.
+
+    Setting up Kiwi's incoming mail filter on a Sendmail system
+
+   To set up Kiwi's incoming mail filter on an older Sendmail system, set
+   up  the  .forward file in your home directory to direct mail to Kiwi's
+   incoming mail filter. Using an editor, edit your .forward file to look
+   like this:
+
+     "|/usr/local/bin/infilter"
+
+   Where your home directory is the location of your home directory.
+
+   You  can  also  change .forward to use Kiwi's mail filter by typing in
+   the following command at a Unix shell prompt:
+
+     echo \"\|/usr/local/bin/infilter\" > ~/.forward 
+
+   Note:Nerwe  versions  of  Sendmail  only  accept  MTAs  in  a  certain
+   directory.  The  Kiwi  package does not support newer Sendmail systems
+   yet.
+
+   Note  that  you  need  to  install  Kiwi with make install to have the
+   .forward file function correctly.
+
+    Setting up Kiwi's incoming mail filter on a Qmail system
+
+   To  set  up  Kiwi's incoming mail filter on a Qmail system, set up the
+   .qmail  and  the  .qmail-default file in your home directory to direct
+   mail  to  Kiwi's incoming mail filter. Using an editor, edit both your
+   .qmail and .qmail-default file to look like this:
+
+     "|/usr/local/bin/infilter"
+
+   Where your home directory is the location of your home directory.
+
+   You  can  also  change  .qmail  and  .qmail-default to use Kiwi's mail
+   filter by typing in the following two commands at a Unix shell prompt:
+
+     echo \"\|/usr/local/bin/infilter\" > ~/.qmail
+     cp ~/.qmail ~/.qmail-default 
+
+   Note  that  you  need  to  install  Kiwi with make install to have the
+   .qmail and .qmail-default files function correctly.
+
+    Verifying that Kiwi's incoming filter works
+
+   Now  that  you have set up your mailbox to forward mail through Kiwi's
+   incoming filter, it is very important to verify that the incoming mail
+   filter is functioning correctly.
+
+   To  do this, reply to the test message you sent to yourself above. The
+   return  address in the message you reply to needs to have a valid Kiwi
+   cookie  between  the  '+' (or '-') symbol and the '@' symbol. (See the
+   section on setting up Kiwi as a Sendmail wrapper for outgoing mail for
+   example Kiwi cookies).
+
+   After  you  reply  to  the message with a valid Kiwi cookie, wait five
+   minutes,  and  check  to  see  if  the  message  was delivered to your
+   mailbox. Assuming the message was delivered (see below if it was not),
+   verify  that  Kiwi's  incoming mail filter correctly discards messages
+   without a valid cookie.
+
+   Send  a  message  to  yourself,  without including either a valid Kiwi
+   cookie  nor  your  Kiwi password (if you have one). The message should
+   not  be delivered to you, and the file .maillog in your home directory
+   should have a record of the message not being delivered.
+
+    Action to take if Kiwi's incoming filter does not function
+
+   If  Kiwi's  incoming  filter  is  not  working on your system, disable
+   Kiwi's  incoming  filter  with  the  following  command  on a Sendmail
+   system:
+
+     rm ~/.forward 
+
+   To  troubleshoot  why  the  message was not delivered, you may wish to
+   look at the file .maillog in your home directory to see if the message
+   was  rejected. You may also, if you have another email account, enable
+   Kiwi's  incoming  mail  filter  again, send the Kiwi-enabled account a
+   message, and see if mail sent to you bounces (In other words, the mail
+   is returned to the sender as undeliverable).
+
+   There  are  many  factors  that  may  cause the incoming filter to act
+   incorrectly,  and  a comprehensive troubleshooting guide is beyond the
+   scope  of  the manual. You should contact your system administrator if
+   Kiwi's incoming filter continues to not properly function.
+
+Further capabilities of Kiwi
+
+   At  this  point, Kiwi should be functioning on your system. Kiwi has a
+   number  of  other  features,  such  as  the  ability to have permanent
+   encrypted  cookies that you can use to subscribe to mailing lists, the
+   ability  to  encrypt  IPs,  which  you  can  use to trace how spammers
+   obtained  emails  on  your  web  page,  and  the ability for different
+   messages to have different time-out periods.
+
+   These  features  are briefly touched on in the file Files.html. I hope
+   that  you  find  Kiwi  a useful tool to help protect your mailbox from
+   unwanted spam email.

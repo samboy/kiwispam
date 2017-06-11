@@ -1,0 +1,36 @@
+.TH DECODE 1 "OCTOBER 2001" Kiwi "Kiwi User Manual"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.\" Due to the way the -mandoc macro works, this needs to be placed
+.\" after the .TH heading
+.hy 0
+.if n .na
+.SH NAME
+decode \- decode a Kiwi-encrypted cookie
+.SH SYNOPSIS
+.BR decode " [ " cookie " ]"
+.SH DESCRIPTION
+.B decode
+reads a Kiwi cookie from either the first argument, if specified, or from
+the standard input, and outputs to the standard 
+output the contents of the Kiwi cookie.
+.SH OPTIONS
+.B decode
+can optionally have the encoded cookie be the first argument.
+.SH FILES
+.IR .kiwirc :
+The file determining the configuration of programs in the Kiwi suite.
+.SH EXAMPLE
+.nf
+$ ./decode
+fmx2v6v
+Data type: Long timeout
+Message: 905972880, or Wed Sep 16 12:08:00 1998
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+.SH "SEE ALSO"
+.BR infilter ,
+.BR clicrypt ,
+.BR wrapper ,
+and the Kiwi HTML documentation

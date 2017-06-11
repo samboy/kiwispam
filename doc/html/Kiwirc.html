@@ -1,0 +1,195 @@
+<HTML><HEAD><TITLE>Thw .kiwirc file</TITLE></HEAD><BODY>
+
+<H1>The .kiwirc file</H1>
+
+<P>
+
+The <CODE>.kiwirc</CODE> file is used by the Kiwi spam-protection program to
+read configuration information.  The location of the <CODE>.kiwirc</CODE> file
+is determined thusly:
+
+<UL>
+
+<LI>If the environmental variable <CODE>KIWIRC</CODE> is defined, the value
+    of <CODE>KIWIRC</CODE> is the location of the kiwirc file.
+
+<LI>Otherwise, if the environmental variable <CODE>HOME</CODE> is defined,
+    look for a file named <CODE>.kiwirc</CODE> in the directory 
+    <CODE>HOME</CODE> points to.
+
+<LI>Finally, determine the uid that the kiwi spam-protection process is 
+    running as (using <CODE>geteuid</CODE>), find out the home directory 
+    of that uid, and look for a <CODE>.kiwirc</CODE> file there.
+
+</UL>
+
+<P>
+
+The Kiwirc file has the following syntax:
+
+<UL>
+
+<LI>Lines containing a <CODE>#</CODE> character do not parse any information 
+    at or after the <CODE>#</CODE> character.  In other words, comments in
+    a <CODE>.kiwirc</CODE> file are started with the <CODE>#</CODE> character.
+    Exception: When the <CODE>#</CODE> character is quoted (Example: 
+    <CODE>"#"</CODE>), the hash is treated does not begin a comment.
+
+<LI>Lines exist in one form: A variable name (containing only 
+    alphanumeric characters), followed by zero or more white
+    space characters (space or tab), followed by an <CODE>=</CODE> sign,
+    followed by zero or more white space characters, followed by the value 
+    for the variable (either quoted with the <CODE>"</CODE> character or 
+    containing only alphanumeric characters).
+
+</UL> 
+
+An alphanumeric character is one of the following:
+
+<UL>
+
+<LI>A letter in the English language, either upper case or lower case
+
+<LI>A number in the English language
+
+<LI>The character <CODE>-</CODE> or <CODE>_</CODE>
+
+</UL>
+
+The following variable names are accepted by version 2 of the Kiwi spam
+protection suite:
+
+<BLOCKQUOTE><CODE>
+        kiwi_qmail<BR> 
+        kiwi_sendmail_path<BR> 
+        kiwi_days_short<BR>
+        kiwi_days_mid<BR>
+        kiwi_days_long<BR>
+        kiwi_forward<BR>
+        kiwi_append<BR>
+        kiwi_my_mailbox<BR>
+        kiwi_my_address<BR>
+        kiwi_maillog<BR>
+        kiwi_key<BR>
+        kiwi_password<BR>
+        kiwi_mid_process<BR>
+        kiwi_bouncemail<BR>
+	kiwi_utf8_output<BR>
+        kiwi_inbound_process<BR>
+</CODE></BLOCKQUOTE>
+
+The meaning of the variable names are as follows:
+
+<H2>kiwi_qmail</H2>
+
+If set to TRUE, this tells the Kiwi spam protection suite that we are running
+Qmail instead of Sendmail.  Cookies are delimited by a <CODE>-</CODE> instead
+of a <CODE>+</CODE>, and the environmental variable <CODE>DTLINE</CODE> is
+used to determine what email address an incoming message was delivered to.
+
+<H2>kiwi_sendmail_path</H2>
+
+The location of sendmail on our system.  On Linux systems, this will usually
+have the value <CODE>/usr/sbin/sendmail</CODE>.  On most other Unices, this
+will generally have the value <CODE>/usr/lib/sendmail</CODE>.
+
+<H2>kiwi_days_short</H2>
+
+The number of days before a message with a short timeout times out.  This
+number is an integer.
+
+<H2>kiwi_days_mid</H2>
+
+The number of days before a message with a medium timeout times out. This
+number is an integer.
+
+<H2>kiwi_days_long</H2>
+
+The number of days before a message with a long timeout times out.  This 
+number is an integer.
+
+<H2>kiwi_forward</H2>
+
+If set to TRUE, accepted mail is forwarded to the address set by 
+<CODE>kiwi_my_address</CODE>.  This should not be set to TRUE if 
+<CODE>kiwi_append</CODE> is set to TRUE.
+
+<H2>kiwi_append</H2>
+
+If set to TRUE, accepted mail is appended to the file pointed to
+<CODE>kiwi_my_mailbox</CODE>.  This should not be set to TRUE if 
+<CODE>kiwi_forward</CODE> is set to TRUE.
+
+<H2>kiwi_my_mailbox</H2>
+
+The file to append if <CODE>kiwi_append</CODE> is set to TRUE.
+
+<H2>kiwi_my_address</H2>
+
+The email address to forward mail to if <CODE>kiwi_forward</CODE> is set
+to TRUE.  If <CODE>kiwi_mid_process</CODE> or 
+<CODE>kiwi_inbound_process</CODE> is set, this is the single argument given
+to the respective process.
+
+<H2>kiwi_maillog</H2>
+
+The log file used by Kiwi to make a note of messages that have been rejected.
+
+<H2>kiwi_key</H2>
+
+The encryption key used by Kiwi.
+
+<H2>kiwi_password</H2>
+
+If the Kiwi cookie someone uses to send mail has the value of 
+<CODE>kiwi_password</CODE>, the message is accepted without checking
+the value of the cookie.
+
+<H2>kiwi_mid_process</H2>
+
+If a message is accepted by the Kiwi software suite, and the encrypted
+cookie is a MID TIMEOUT cookie, and this value is set to a non-blank
+value, then the accepted message will be piped to the program pointed
+to by <CODE>kiwi_mid_process</CODE> with a single argument of the value
+for <CODE>kiwi_my_address</CODE>.  This overrides the value of 
+<CODE>kiwi_forward</CODE>, <CODE>kiwi_append</CODE>, and 
+<CODE>kiwi_inbound_process</CODE> in the case of messages with a MID TIMEOUT
+cookie.
+
+<H2>kiwi_bouncemail</H2>
+
+If a message is <I>not</I> accepted by the Kiwi software suite, and 
+<CODE>kiwi_bouncemail</CODE> is set, then the person sending the message
+will receive a copy of the file pointed to by <CODE>kiwi_bouncemail</CODE>,
+followed by the message they sent.
+
+<H2>kiwi_inbound_process</H2>
+
+If a message is accepted by the Kiwi software suite, 
+and this value is set to a non-blank
+value, then the accepted message will be piped to the program pointed
+to by <CODE>kiwi_inbound_process</CODE> with a single argument of the value
+for <CODE>kiwi_my_address</CODE>.  This overrides the value of 
+<CODE>kiwi_forward</CODE> and <CODE>kiwi_append</CODE>.
+
+<H2>kiwi_return_path</H2>
+
+If this is set, the Return-Path header of all mail sent out by the Kiwi
+software suite is set to this value.  If this is not set, the Return-Path
+header of all mail sent out by the Kiwi software suite is set to 
+'nobody@example.com'.  Since some machines' spam filters require a domain
+the resolves in the return path, this should be set to a known email
+address, perhaps one that silently discards mail.
+
+<P>
+
+<B>Note:</B> This only works on Qmail systems.  On sendmail systems, give
+sendmail an argument of <CODE>-f</CODE>, followed by the desired return-path,
+to change the return-path.
+
+<H2>kiwi_utf8_output</H2>
+
+If this is set to "TRUE", Kiwi will output utf-8 when displaying decoded
+cookies with five-letter messages instead of the default iso 8859-1
+
+</BODY></HTML>

@@ -1,0 +1,68 @@
+#!/usr/bin/perl 
+
+# Copyright 1998 Sam Trenholme
+# This code is released to the public domain.
+
+# Note that you need Perl5 and an OS with /dev/random to run this script
+
+# Most modern Linux distributionis have both 
+
+=head1 Name
+
+secpass - Secure random password generator
+
+=head2 Usage
+
+secpass
+
+=head2 Description
+
+I<secpass> is a secure random password generator that uses the special
+Linux device I</dev/random> to generate a password with 96 bits of entropy.
+The program generates a random password, and outputs the random password
+to standard output.
+
+=head2 bugs
+
+Since I<secpass> depends on I</dev/random/>, the program will freeze if the
+secure random number seed is exhausted.  To add numbers to the seed again,
+simply type randomly on the console keyboard.  The program may freeze if
+there is no one at the console, and the random seed is exhausted.
+
+The program wastes 32 bits of the seed in I</dev/random>, since it uses
+a logical and to truncate the high two bits.
+
+=cut
+
+$randomfile = "/dev/random"; # Linux inside -- secure RNG
+
+print "If it pauses here, please type some random text to replenish the ";
+print "random seed\n";
+$pw = pw_generate();
+print "Random password with 96 bits of entropy: $pw\n"; 
+
+#------------------------------------------------------------------------------
+# Generate funky random password:
+#------------------------------------------------------------------------------
+sub pw_generate {
+
+        my($passset, $rnd_passwd, $random_num);
+
+	open(FILE, "< $randomfile") || return -1; # secure RNG
+        
+        # Since 1 ~= l and 0 =~ O, don't generate passwords with them.
+        # This will just confuse people using ugly fonts.
+
+	@$passset = ('A'..'N','P'..'Z','a'..'k','m'..'z','2'..'9',
+  	              '@','.','!','+','-','*');  # 64 symbols
+        $rnd_passwd = "";
+        for ($i = 0; $i < 16; $i++) {
+	        $random_num = ord(getc(FILE));
+                #if($a) { $a = $random_num *256 } else {$a=$random_num}
+		$random_num &= 63;
+                $rnd_passwd .= @$passset[$random_num];
+        }
+        #return $a;
+        return $rnd_passwd;
+}
+

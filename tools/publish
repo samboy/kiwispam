@@ -1,0 +1,11 @@
+#!/bin/bash
+
+NUMBER=$( ls kiwi2-0.9.*.tar.gz | tail -1 | cut -f3 -d. )
+NUMBER=$( expr $NUMBER + 1 )
+#NUMBER="0" # Used when bumping the non-'bugfix' numbers up
+cd kiwi2/src/
+make clean
+cd ~-
+tar cvzf kiwi2-0.9.$NUMBER.tar.gz kiwi2
+echo scp kiwi2-0.9.$NUMBER.tar.gz set@samiam.org:public_html/crypto/release/UNSTABLE/
+echo scp kiwi2-0.9.$NUMBER.tar.gz samboy@kiwispam.sourceforge.net:/home/groups/kiwispam/htdocs/download/

@@ -1,0 +1,54 @@
+#!/usr/bin/perl
+
+# Copyright 2000 Sam Trenholme
+# This script is released to the public domain
+
+# This is a simple tool that makes a Kiwi1 config.h file a Kiwi2 .kiwirc file
+
+$incomment = 0; # We are not in a comment
+
+while(<>)
+	{
+	# Convert #define FOO "bar" in to kiwi_foo = "bar"
+	if(/\#define\s+(\w+)\s+("[^"]+"|\S+)/)
+		{
+		$varname = $1;
+		$value = $2;
+		$varname = lc($varname);	
+		# We changed some variable names	
+		if($varname =~ /^sendmail$/)
+			{
+			$varname = "sendmail_path";
+			}
+		elsif($varname =~ /^my(\w+)/)
+			{
+			$varname = "my_$1";
+			}
+		$_ = $` . "kiwi_$varname = $value" . $';
+		}
+	# Convert #define FOO to kiwi_foo = "TRUE"
+	elsif(/\#define\s+(\w+)/)
+		{
+		$varname = $1;
+		$varname = lc($varname);
+		$_ = $` . "kiwi_$varname = \"TRUE\"" . $';
+		}
+
+	# Convert C-style /* ... */ comments to sh-style # comments
+	# Note: this doesn't work if a line has more than one comment in it
+	if(m|/\*|)
+		{
+		$incomment = 1;
+		}
+	if($incomment && !(s|/\*|#|))
+		{
+		$_ = "#" . $_;
+		}
+	if(m|\*/|)
+		{
+		$incomment = 0;
+		}
+	s|\*/||;
+
+	print;
+	}

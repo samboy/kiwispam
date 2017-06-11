@@ -1,0 +1,53 @@
+.TH WRAPPER 1 "OCTOBER 2001" Kiwi "Kiwi User Manual"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.\" Due to the way the -mandoc macro works, this needs to be placed
+.\" after the .TH heading
+.hy 0
+.if n .na
+.SH NAME
+wrapper \- Add a Kiwi cookie with a long timeout to outgoing mail
+.SH SYNOPSIS
+.B wrapper
+is a 
+.B sendmail
+wrapper, and is invoked the same way 
+.B sendmail
+is invoked
+.SH DESCRIPTION
+.B wrapper
+adds a Kiwi cookie with a long timeout to the return address in 
+outgoing mail.  The time stamp of the cookie
+it generates is based on the current time returned by the
+.B time(5)
+system call. 
+
+After adding an encrypted cookie to the return address in the headers,
+.B wrapper
+invokes
+.B sendmail
+with the same arguments
+.B wrapper
+was given.
+
+.BR wrapper ,
+after making the appropriate changes to the headers,
+passes on the standard input to the invoked
+.B sendmail
+process.
+
+.SH OPTIONS
+.B wrapper
+ignores all command line options, passing them on to
+.BR sendmail .
+
+.SH FILES
+.IR kiwirc :
+The file determining the configuration of programs in the Kiwi suite.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+.SH "SEE ALSO"
+.BR decode ,  
+.BR infilter ,
+.BR clicrypt ,
+and the Kiwi HTML documentation

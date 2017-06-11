@@ -1,0 +1,16 @@
+I would like to thank the following people, without whose help the Kiwi 
+project would not have been possible:
+
+Bruce Schneier, who created the Blowfish encryption algolryhtm, a version
+of which I based the 32-bit block cipher used here on.
+
+Niels Provos (with advice from David Mazieres), who implemented the
+OpenBSD version of Blowfish that I used in early versions of Kiwi,
+and based my encryption code on.
+
+Of course, any errors in the Kiwi suite are my own errors.
+
+D.J. Bernstein and the Electronic Frontier Foundation, whose legal efforts
+made releasing this source code to the world possible. (Thank you for Qmail,
+too)
+

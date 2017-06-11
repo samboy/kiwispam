@@ -1,0 +1,197 @@
+<HTML><HEAD><TITLE>Kiwi Quick Start</TITLE></HEAD><BODY>
+
+<H1>Kiwi Quick Start</H1>
+
+<H2>Index</H2>
+
+<P>
+
+<A href=#about>About this document</A><BR>
+<A href=#files>Files included with Kiwi</A><BR>
+<A href=#example>Example of using Kiwi</A><BR>
+
+<A NAME=about>
+
+<H2>About this document</H2>
+
+<P>
+
+This is a quick start guide, geared towards experienced users of the Unix
+operating system.  More detailed instructions are in the file <A
+href=Start.html>Start.html</A>.
+
+<A NAME=files>
+
+<H2>Files included with Kiwi</H2>
+
+<P>
+
+This is a basic description of some of the files in the kiwi package, and
+how to use them. 
+
+<P>
+
+<DL>
+<DT>
+example_kiwirc
+
+<DD>
+
+This file needs to be copied to your home directory and given the filename
+<CODE>.kiwirc</CODE>.  This file tells the Kiwi software  
+whether you have a sendmail or qmail system, the location
+of your mail spool and/or the address you want to forward "good" mail to,
+the log file to use, the encryption key, and the password so friends can
+email you without needing to know an encrypted cookie.  You also need to
+decide on whether to forward "good" mail on, or append it to a mailbox you
+specify. 
+
+<DT>
+secpass
+<DD>
+
+Located in the directory <CODE>tools</CODE>, secpass is used to generate a
+random key for the encryption, to be placed in the kiwi_key field in .kiwirc
+(using cut and paste).  This program will only run on an operating system
+with <CODE>/dev/random</CODE> support, and with a copy of the perl
+interpreter in <CODE>/usr/bin/perl</CODE>.  Any modern Linux distribution
+will have /dev/random support and perl located at /usr/bin/perl. 
+
+<DT>
+clicrypt
+<DD>
+
+Depending on how this is run, this gives you cookies which timeout after
+a certain number of days, an encrypted 28-bit IP subnet, or a five-letter
+message.
+
+<P>
+
+When run with no arguments, you are given three cookies: One which times
+out (by default) in three days, one which times out in two weeks (this one
+is usually used for Usenet postings), and one which times out after 90 days.
+
+<P>Example: <CODE>clicrypt</CODE>
+
+<P> 
+
+You can change the timeout values by varying kiwi_days_short, kiwi_days_mid,
+and kiwi_days_long in your <CODE>.kiwirc</CODE> file.
+
+<P>
+
+If you send out an email with the
+return address name+<I>cookie</I>@domain.com (or
+name-<I>cookie</I>@domain.com on Qmail systems), the email address will
+time out. 
+
+<P>
+
+To encrypt an IP subblock, either set up the 'REMOTE_ADDR'
+environmental variable (or run it as a SSI on most web servers) or give it
+an IP on the command line.  Details on using ipcrypt on an SSI-enabled web
+browser are in the file <A HREF=Webmailto.html>Webmailto.html</A>.
+
+<P>Example: <CODE>clicrypt 127.0.0.1</CODE>
+
+<P>
+
+This program can also be used to encrypt a five-letter message, typically used 
+for subscribing to announce mailing lists, or to give to people of marginal
+trust.  
+
+<P>Example: <CODE>clicrypt abcde</CODE>
+
+<DT>
+decode
+<DD>
+
+This will tell you the contents of a given cookie.  To use, simply
+run it, type in the cookie and hit return.
+
+<DT>
+infilter
+<DD>
+
+This is the program you would place in <CODE>.forward</CODE> (or
+<CODE>.qmail</CODE> and <CODE>.qmail-default</CODE> on qmail systems) that
+determines if a message was sent to a valid cookie (or has the correct
+password in the email address), and if so, either appends your mailbox
+with the message in question, or forwards it to another email address you
+have.  If the cookie was rejected, then it discards the message and makes
+a note in your maillog file. 
+
+<P>
+
+A cookie will be rejected if the cookie does not decrypt to valid data (a
+randomly generated cookie has a 1 in 113 chance of being considered valid
+data), or if the time stamp in the decrypted cookie has expired.
+
+<P>
+
+If <I>kiwi_password</I> is defined in <CODE>.kiwirc</CODE>, and someone sends
+mail with the password in place of the encrypted cookie in the address,
+the message will be accepted.  This is useful for giving personal friends
+an easy to remember email address.  Care must be taken that the email
+address with the password does not fall in to spammers' hands. 
+
+<DT>
+wrapper
+<DD>
+This is a sendmail wrapper, which will append a 90-day timeout cookie to 
+your return address in all outgoing mail you send.  The procedure for using
+this wrapper to send out mail instead of sendmail depends on your client.
+If using Pine, add a line like this to your <CODE>.pinerc</CODE> file:
+<BLOCKQUOTE>
+<CODE>
+sendmail-path=/usr/local/bin/wrapper -t
+</CODE>
+</BLOCKQUOTE>
+
+
+</DL>
+
+<A NAME=example>
+
+<H2>Example of using Kiwi</H2>
+
+<P>
+
+Example of using Kiwi:<BR>
+
+<CODE>
+$ <B>cd ../src</B><BR>
+$ <B>cp exmaple_kiwirc ~/.kiwirc</B><BR>
+$ <B>../tools/secpass</B><BR>
+If it pauses here, please type some random text to replenish the random seed
+<BR>
+Random password with 96 bits of entropy: jzsmGA.Mtep7-tDD
+<BR>
+</CODE><I>[Paste the password generated by secpass (<B>Not</B> the above 
+example password), and put it in the kiwi_key field when you edit .kiwirc]</I>
+<CODE><BR>
+$ <B>pico -w ~/.kiwirc</B> </CODE><I>[edit the .kiwirc file]</I><CODE><BR>
+$ <B>make</B> </CODE><I>[you will get a number of compiling messages]</I><CODE>
+<BR>
+$ <B>./clicrypt</B><BR>
+fmx2v6v </CODE><I>[The exact text will be different on your system]</I>
+<CODE><BR>
+$ <B>./clicrypt 127.0.0.1</B><BR>
+eqjq2b4 </CODE><I>[The exact text will be different on your system]</I>
+<CODE><BR>
+$ <B>./decode</B><BR>
+fmx2v6v </CODE><I>[Use the text you got from clicrypt above]</I><CODE><BR>
+Data type: Long timeout<BR>
+Message: 905972880, or Wed Sep 16 12:08:00 1998 
+</CODE><I>[Your date will be different]</I><CODE>
+<BR>
+$ <B>./decode</B><BR>
+eqjq2b4 </CODE><I>[Use the text you got from clicrypt above]</I><CODE><BR>
+Data type: Truncated IP<BR>
+Message: 127.0.0.0-16<BR>
+
+</CODE>
+
+<P>
+
+</BODY></HTML>
